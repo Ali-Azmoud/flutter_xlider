@@ -193,10 +193,22 @@ FlutterSlider(
   ...
 )
 ```
-
 you can find more about [NumberFormat](https://docs.flutter.io/flutter/intl/NumberFormat-class.html)
 
 ![](images/range-compact.gif)
+
+
+### Always Show Tooltips
+
+tooltips always displayed if this property is set to `true`. like above example
+
+```dart
+FlutterSlider(
+  ...
+  alwaysShowTooltip: true,
+  ...
+)
+```
 
 ### Touch Zone
 

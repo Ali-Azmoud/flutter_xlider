@@ -178,7 +178,33 @@ FlutterSlider(
 )
 ```
 
-![](images/range-ignore-steps.gif)
+### Minimum Distance
+
+when using range slider, the minimum distance between two handlers can be defined using `minimumDistance` option
+
+```dart
+FlutterSlider(
+  ...
+    minimumDistance: 300,
+  ...
+)
+```
+
+![](images/range-minimum-distance.gif)
+
+### Maximum Distance
+
+this is the opposite of minimum distance, when using range slider, the maximum distance between two handlers can be defined using `maximumDistance` option
+
+```dart
+FlutterSlider(
+  ...
+    maximumDistance: 300,
+  ...
+)
+```
+
+![](images/range-maximum-distance.gif)
 
 ### Tooltip Number Format
 

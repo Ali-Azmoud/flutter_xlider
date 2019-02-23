@@ -30,36 +30,40 @@ class FlutterSlider extends StatefulWidget {
   final TextStyle tooltipTextStyle;
   final FlutterSliderTooltip tooltipBox;
   final intl.NumberFormat tooltipNumberFormat;
+  final double minimumDistance;
+  final double maximumDistance;
 
-  FlutterSlider(
-      {this.key,
-      @required this.min,
-      @required this.max,
-      @required this.values,
-      this.handler,
-      this.rightHandler,
-      this.divisions,
-      this.tooltipTextStyle =
-          const TextStyle(fontSize: 12, color: Colors.black38),
-      this.tooltipBox,
-      this.onDragStarted,
-      this.onDragCompleted,
-      this.onDragging,
-      this.rangeSlider = false,
-      this.alwaysShowTooltip = false,
-      this.leftInactiveTrackBarColor = const Color(0x110000ff),
-      this.rightInactiveTrackBarColor = const Color(0x110000ff),
-      this.activeTrackBarColor = const Color(0xff2196F3),
-      this.activeTrackBarHeight = 3.5,
-      this.inactiveTrackBarHeight = 3,
-      this.rtl = false,
-      this.jump = false,
-      this.ignoreSteps = const [],
-      this.disabled = false,
-      this.touchZone = 2,
-      this.displayTestTouchZone = false,
-      this.tooltipNumberFormat})
-      : assert(touchZone != null && (touchZone >= 1 && touchZone <= 5));
+  FlutterSlider({
+    this.key,
+    @required this.min,
+    @required this.max,
+    @required this.values,
+    this.handler,
+    this.rightHandler,
+    this.divisions,
+    this.tooltipTextStyle =
+        const TextStyle(fontSize: 12, color: Colors.black38),
+    this.tooltipBox,
+    this.onDragStarted,
+    this.onDragCompleted,
+    this.onDragging,
+    this.rangeSlider = false,
+    this.alwaysShowTooltip = false,
+    this.leftInactiveTrackBarColor = const Color(0x110000ff),
+    this.rightInactiveTrackBarColor = const Color(0x110000ff),
+    this.activeTrackBarColor = const Color(0xff2196F3),
+    this.activeTrackBarHeight = 3.5,
+    this.inactiveTrackBarHeight = 3,
+    this.rtl = false,
+    this.jump = false,
+    this.ignoreSteps = const [],
+    this.disabled = false,
+    this.touchZone = 2,
+    this.displayTestTouchZone = false,
+    this.tooltipNumberFormat,
+    this.minimumDistance = 0,
+    this.maximumDistance = 0,
+  }) : assert(touchZone != null && (touchZone >= 1 && touchZone <= 5));
 
   @override
   _FlutterSliderState createState() => _FlutterSliderState();
@@ -127,7 +131,7 @@ class _FlutterSliderState extends State<FlutterSlider>
 
   void _generateHandler() {
     if (widget.rightHandler == null) {
-      rightHandler = RSDefaultHandler(
+      rightHandler = _RSDefaultHandler(
         id: rightHandlerKey,
         touchZone: widget.touchZone,
         displayTestTouchZone: widget.displayTestTouchZone,
@@ -138,7 +142,7 @@ class _FlutterSliderState extends State<FlutterSlider>
     } else {
       _finalRightHandlerWidth = widget.rightHandler.width;
       _finalRightHandlerHeight = widget.rightHandler.height;
-      rightHandler = RSInputHandler(
+      rightHandler = _RSInputHandler(
         id: rightHandlerKey,
         handler: widget.rightHandler,
         handlerWidth: _finalRightHandlerWidth,
@@ -153,7 +157,7 @@ class _FlutterSliderState extends State<FlutterSlider>
       if (widget.rtl && !widget.rangeSlider) {
         hIcon = Icons.chevron_left;
       }
-      leftHandler = RSDefaultHandler(
+      leftHandler = _RSDefaultHandler(
         id: leftHandlerKey,
         touchZone: widget.touchZone,
         displayTestTouchZone: widget.displayTestTouchZone,
@@ -164,7 +168,7 @@ class _FlutterSliderState extends State<FlutterSlider>
     } else {
       _finalLeftHandlerWidth = widget.handler.width;
       _finalLeftHandlerHeight = widget.handler.height;
-      leftHandler = RSInputHandler(
+      leftHandler = _RSInputHandler(
         id: leftHandlerKey,
         handler: widget.handler,
         handlerWidth: _finalLeftHandlerWidth,
@@ -212,6 +216,19 @@ class _FlutterSliderState extends State<FlutterSlider>
 
     _lowerValue = _originalLowerValue - widget.min;
     _upperValue = _originalUpperValue - widget.min;
+
+    if (widget.rangeSlider == true &&
+        widget.maximumDistance != null &&
+        widget.maximumDistance > 0 &&
+        (_upperValue - _lowerValue) > widget.maximumDistance) {
+      throw 'lower and upper distance is more than maximum distance';
+    }
+    if (widget.rangeSlider == true &&
+        widget.minimumDistance != null &&
+        widget.minimumDistance > 0 &&
+        (_upperValue - _lowerValue) < widget.minimumDistance) {
+      throw 'lower and upper distance is less than minimum distance';
+    }
 
     _rightTooltipOpacity = (widget.alwaysShowTooltip == true) ? 1 : 0;
     _leftTooltipOpacity = (widget.alwaysShowTooltip == true) ? 1 : 0;
@@ -420,41 +437,53 @@ class _FlutterSliderState extends State<FlutterSlider>
             feedback: Container()),
         onPointerMove: (_) {
           if (widget.disabled == true) return;
-          double dx = _.position.dx - _containerLeft;
 
+          bool validMove = true;
+
+          double dx = _.position.dx - _containerLeft;
           double xPosTmp = dx - _handlersPadding;
 
-//          print(xPosTmp);
+          double rx =
+              ((xPosTmp ~/ (_containerWidthWithoutPadding / _divisions)) *
+                      _power)
+                  .roundToDouble();
 
-          if (xPosTmp - (widget.touchZone * 20 / 2) <=
+          if (widget.rangeSlider &&
+              widget.minimumDistance > 0 &&
+              (rx + widget.minimumDistance) >= _upperValue) {
+            _lowerValue = (_upperValue - widget.minimumDistance > _fakeMin)
+                ? _upperValue - widget.minimumDistance
+                : _fakeMin;
+            validMove = false;
+          }
+          if (widget.rangeSlider &&
+              widget.maximumDistance > 0 &&
+              rx <= (_upperValue - widget.maximumDistance)) {
+            _lowerValue = (_upperValue - widget.maximumDistance > _fakeMin)
+                ? _upperValue - widget.maximumDistance
+                : _fakeMin;
+            validMove = false;
+          }
+
+          if (widget.ignoreSteps.length > 0) {
+            for (SliderIgnoreSteps steps in widget.ignoreSteps) {
+              if (!((widget.rtl == false &&
+                      (rx >= steps.from && rx <= steps.to) == false) ||
+                  (widget.rtl == true &&
+                      ((_fakeMax - rx) >= steps.from &&
+                              (_fakeMax - rx) <= steps.to) ==
+                          false))) {
+                validMove = false;
+              }
+            }
+          }
+
+          if (validMove &&
+                  xPosTmp - (widget.touchZone * 20 / 2) <=
                       rightHandlerXPosition + 1 &&
                   dx >= _handlersPadding - 1 /* - _leftPadding*/
               ) {
-            //xPosTmp - (_handlersPadding / 2);
-
-            double rx =
-                ((xPosTmp ~/ (_containerWidthWithoutPadding / _divisions)) *
-                        _power)
-                    .roundToDouble();
-
-            if (widget.ignoreSteps.length > 0) {
-              List<int> ignoreResult = [];
-              for (SliderIgnoreSteps steps in widget.ignoreSteps) {
-                if ((widget.rtl == false &&
-                        (rx >= steps.from && rx <= steps.to) == false) ||
-                    (widget.rtl == true &&
-                        ((_fakeMax - rx) >= steps.from &&
-                                (_fakeMax - rx) <= steps.to) ==
-                            false)) {
-                  ignoreResult.add(1);
-                } else {
-                  ignoreResult.add(0);
-                }
-              }
-              if (ignoreResult.contains(0) == false) _lowerValue = rx;
-            } else {
-              _lowerValue = rx;
-            }
+            _lowerValue = rx;
 
             if (_lowerValue > _fakeMax) _lowerValue = _fakeMax;
             if (_lowerValue < _fakeMin) _lowerValue = _fakeMin;
@@ -469,15 +498,15 @@ class _FlutterSliderState extends State<FlutterSlider>
             } else {
               leftHandlerXPosition = xPosTmp - (widget.touchZone * 20 / 2);
             }
+          }
 
-            _outputLowerValue = _displayRealValue(_lowerValue);
-            if (widget.rtl == true) {
-              _outputLowerValue = _displayRealValue(_fakeMax - _lowerValue);
-            }
+          _outputLowerValue = _displayRealValue(_lowerValue);
+          if (widget.rtl == true) {
+            _outputLowerValue = _displayRealValue(_fakeMax - _lowerValue);
+          }
 //            print("LOWER VALUE:" + _outputLowerValue.toString());
 
-            setState(() {});
-          }
+          setState(() {});
 
           _callbacks('onDragging');
         },
@@ -541,40 +570,50 @@ class _FlutterSliderState extends State<FlutterSlider>
         onPointerMove: (_) {
           if (widget.disabled == true) return;
 
+          bool validMove = true;
+
           double dx = _.position.dx - _containerLeft;
           double xPosTmp = dx - _handlersPadding;
 
-//          print(xPosTmp);
+          double rx =
+              ((xPosTmp ~/ (_containerWidthWithoutPadding / _divisions)) *
+                      _power)
+                  .roundToDouble();
+          if (widget.rangeSlider &&
+              widget.minimumDistance > 0 &&
+              (rx - widget.minimumDistance) <= _lowerValue) {
+            validMove = false;
+            _upperValue = (_lowerValue + widget.minimumDistance < _fakeMax)
+                ? _lowerValue + widget.minimumDistance
+                : _fakeMax;
+          }
+          if (widget.rangeSlider &&
+              widget.maximumDistance > 0 &&
+              rx >= (_lowerValue + widget.maximumDistance)) {
+            validMove = false;
+            _upperValue = (_lowerValue + widget.maximumDistance < _fakeMax)
+                ? _lowerValue + widget.maximumDistance
+                : _fakeMax;
+          }
 
-          if (xPosTmp >=
+          if (widget.ignoreSteps.length > 0) {
+            for (SliderIgnoreSteps steps in widget.ignoreSteps) {
+              if (!((widget.rtl == false &&
+                      (rx >= steps.from && rx <= steps.to) == false) ||
+                  (widget.rtl == true &&
+                      ((_fakeMax - rx) >= steps.from &&
+                              (_fakeMax - rx) <= steps.to) ==
+                          false))) {
+                validMove = false;
+              }
+            }
+          }
+
+          if (validMove &&
+              xPosTmp >=
                   leftHandlerXPosition - 1 + (widget.touchZone * 20 / 2) &&
               dx <= _constraintMaxWidth - _handlersPadding + 1) {
-            double rx =
-                ((xPosTmp ~/ (_containerWidthWithoutPadding / _divisions)) *
-                        _power)
-                    .roundToDouble();
-
-//            _upperValue = rx;
-//
-
-            if (widget.ignoreSteps.length > 0) {
-              List<int> ignoreResult = [];
-              for (SliderIgnoreSteps steps in widget.ignoreSteps) {
-                if ((widget.rtl == false &&
-                        (rx >= steps.from && rx <= steps.to) == false) ||
-                    (widget.rtl == true &&
-                        ((_fakeMax - rx) >= steps.from &&
-                                (_fakeMax - rx) <= steps.to) ==
-                            false)) {
-                  ignoreResult.add(1);
-                } else {
-                  ignoreResult.add(0);
-                }
-              }
-              if (ignoreResult.contains(0) == false) _upperValue = rx;
-            } else {
-              _upperValue = rx;
-            }
+            _upperValue = rx;
 
             if (_upperValue > _fakeMax) _upperValue = _fakeMax;
             if (_upperValue < _fakeMin) _upperValue = _fakeMin;
@@ -597,13 +636,14 @@ class _FlutterSliderState extends State<FlutterSlider>
 //                        _power)
 //                    .roundToDouble();
 
-            _outputUpperValue = _displayRealValue(_upperValue);
-            if (widget.rtl == true) {
-              _outputUpperValue = _displayRealValue(_fakeMax - _upperValue);
-            }
-
-            setState(() {});
           }
+
+          _outputUpperValue = _displayRealValue(_upperValue);
+          if (widget.rtl == true) {
+            _outputUpperValue = _displayRealValue(_fakeMax - _upperValue);
+          }
+
+          setState(() {});
 
           _callbacks('onDragging');
         },
@@ -771,7 +811,7 @@ class _FlutterSliderState extends State<FlutterSlider>
   }
 }
 
-class RSDefaultHandler extends StatelessWidget {
+class _RSDefaultHandler extends StatelessWidget {
   final GlobalKey id;
   final Widget child;
   final double handlerWidth;
@@ -779,7 +819,7 @@ class RSDefaultHandler extends StatelessWidget {
   final int touchZone;
   final bool displayTestTouchZone;
 
-  RSDefaultHandler(
+  _RSDefaultHandler(
       {this.id,
       this.child,
       this.handlerWidth,
@@ -824,7 +864,7 @@ class RSDefaultHandler extends StatelessWidget {
   }
 }
 
-class RSInputHandler extends StatelessWidget {
+class _RSInputHandler extends StatelessWidget {
   final GlobalKey id;
   final SizedBox handler;
   final double handlerWidth;
@@ -832,7 +872,7 @@ class RSInputHandler extends StatelessWidget {
   final int touchZone;
   final bool displayTestTouchZone;
 
-  RSInputHandler(
+  _RSInputHandler(
       {this.id,
       this.handler,
       this.handlerWidth,

@@ -251,9 +251,10 @@ FlutterSlider(
 
 There are 3 events
 
-`onDragStarted`: fires when drag starts
-`onDragCompleted` fires when drag ends
-`onDragging` keeps firing when dragging
+`onDragStarted`: fires when drag starts  
+`onDragCompleted` fires when drag ends  
+`onDragging` keeps firing when dragging  
+
 
 all three of above functions returns two `double` values. `Lower Value` and `Upper Value`
 

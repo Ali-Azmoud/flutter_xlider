@@ -164,7 +164,7 @@ FlutterSlider(
 
 ### Ignore Steps
 
-if you configurations requires that some steps are not available, you can use `ignoreSteps` property.  
+if your configurations requires that some steps are not available, you can use `ignoreSteps` property.  
 this property accepts a simple class to define `from` and `to` ranges.
 
 ```dart
@@ -177,6 +177,8 @@ FlutterSlider(
   ...
 )
 ```
+
+![](images/range-ignore-steps.gif)
 
 ### Minimum Distance
 

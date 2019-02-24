@@ -448,7 +448,9 @@ class _FlutterSliderState extends State<FlutterSlider>
                 ];
               }
 
-              _leftHandlerScaleAnimationController.reverse();
+              _stopHandlerAnimation(
+                  animation: _leftHandlerScaleAnimation,
+                  controller: _leftHandlerScaleAnimationController);
 
               if (widget.alwaysShowTooltip == false) {
                 _leftTooltipOpacity = 0;
@@ -568,7 +570,10 @@ class _FlutterSliderState extends State<FlutterSlider>
                 setState(() {});
               }
 
-              _rightHandlerScaleAnimationController.forward();
+              if (widget.rangeSlider == false)
+                _leftHandlerScaleAnimationController.forward();
+              else
+                _rightHandlerScaleAnimationController.forward();
 
               _callbacks('onDragStarted');
             },
@@ -580,7 +585,15 @@ class _FlutterSliderState extends State<FlutterSlider>
                 ];
               }
 
-              _rightHandlerScaleAnimationController.reverse();
+              if (widget.rangeSlider == false) {
+                _stopHandlerAnimation(
+                    animation: _leftHandlerScaleAnimation,
+                    controller: _leftHandlerScaleAnimationController);
+              } else {
+                _stopHandlerAnimation(
+                    animation: _rightHandlerScaleAnimation,
+                    controller: _rightHandlerScaleAnimationController);
+              }
 
               if (widget.alwaysShowTooltip == false) {
                 _rightTooltipOpacity = 0;
@@ -690,6 +703,18 @@ class _FlutterSliderState extends State<FlutterSlider>
         },
       ),
     );
+  }
+
+  void _stopHandlerAnimation(
+      {Animation animation, AnimationController controller}) {
+    if (widget.handlerAnimation.reverseCurve != null) {
+      if (animation.isCompleted)
+        controller.reverse();
+      else {
+        controller.reset();
+      }
+    } else
+      controller.reset();
   }
 
   drawHandlers() {
@@ -980,8 +1005,8 @@ class SliderHandlerAnimation {
 
   const SliderHandlerAnimation(
       {this.curve = Curves.elasticOut,
-      this.reverseCurve = Curves.bounceIn,
-      this.duration = const Duration(milliseconds: 600),
+      this.reverseCurve,
+      this.duration = const Duration(milliseconds: 700),
       this.scale = 1.4})
       : assert(curve != null && duration != null && scale != null);
 }

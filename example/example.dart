@@ -43,15 +43,22 @@ class _MyHomePageState extends State<MyHomePage> {
             margin: EdgeInsets.only(top: 50, left: 50, right: 50),
             alignment: Alignment.centerLeft,
             child: FlutterSlider(
-              values: [30, 420],
-              rangeSlider: true,
+              values: [60, 160],
 //              ignoreSteps: [
-//                SliderIgnoreSteps(from: 100, to: 100),
-//                SliderIgnoreSteps(from: 250, to: 350),
+//                SliderIgnoreSteps(from: 120, to: 150),
+//                SliderIgnoreSteps(from: 160, to: 190),
 //              ],
-              max: 500,
-              min: 0,
-              divisions: 50,
+              max: 200,
+              min: 50,
+              maximumDistance: 300,
+              rangeSlider: true,
+              rtl: true,
+              handlerAnimation: SliderHandlerAnimation(
+                  curve: Curves.elasticOut,
+                  reverseCurve: null,
+                  duration: Duration(milliseconds: 700),
+                  scale: 1.4
+              ),
               onDragging: (lowerValue, upperValue) {
                 _lowerValue = lowerValue;
                 _upperValue = upperValue;

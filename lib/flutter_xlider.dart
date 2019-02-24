@@ -32,38 +32,45 @@ class FlutterSlider extends StatefulWidget {
   final intl.NumberFormat tooltipNumberFormat;
   final double minimumDistance;
   final double maximumDistance;
+  final SliderHandlerAnimation handlerAnimation;
 
-  FlutterSlider({
-    this.key,
-    @required this.min,
-    @required this.max,
-    @required this.values,
-    this.handler,
-    this.rightHandler,
-    this.divisions,
-    this.tooltipTextStyle =
-        const TextStyle(fontSize: 12, color: Colors.black38),
-    this.tooltipBox,
-    this.onDragStarted,
-    this.onDragCompleted,
-    this.onDragging,
-    this.rangeSlider = false,
-    this.alwaysShowTooltip = false,
-    this.leftInactiveTrackBarColor = const Color(0x110000ff),
-    this.rightInactiveTrackBarColor = const Color(0x110000ff),
-    this.activeTrackBarColor = const Color(0xff2196F3),
-    this.activeTrackBarHeight = 3.5,
-    this.inactiveTrackBarHeight = 3,
-    this.rtl = false,
-    this.jump = false,
-    this.ignoreSteps = const [],
-    this.disabled = false,
-    this.touchZone = 2,
-    this.displayTestTouchZone = false,
-    this.tooltipNumberFormat,
-    this.minimumDistance = 0,
-    this.maximumDistance = 0,
-  }) : assert(touchZone != null && (touchZone >= 1 && touchZone <= 5));
+  FlutterSlider(
+      {this.key,
+      @required this.min,
+      @required this.max,
+      @required this.values,
+      this.handler,
+      this.rightHandler,
+      this.divisions,
+      this.tooltipTextStyle =
+          const TextStyle(fontSize: 12, color: Colors.black38),
+      this.tooltipBox,
+      this.onDragStarted,
+      this.onDragCompleted,
+      this.onDragging,
+      this.rangeSlider = false,
+      this.alwaysShowTooltip = false,
+      this.leftInactiveTrackBarColor = const Color(0x110000ff),
+      this.rightInactiveTrackBarColor = const Color(0x110000ff),
+      this.activeTrackBarColor = const Color(0xff2196F3),
+      this.activeTrackBarHeight = 3.5,
+      this.inactiveTrackBarHeight = 3,
+      this.rtl = false,
+      this.jump = false,
+      this.ignoreSteps = const [],
+      this.disabled = false,
+      this.touchZone = 2,
+      this.displayTestTouchZone = false,
+      this.tooltipNumberFormat,
+      this.minimumDistance = 0,
+      this.maximumDistance = 0,
+      this.handlerAnimation = const SliderHandlerAnimation()})
+      : assert(touchZone != null && (touchZone >= 1 && touchZone <= 5)),
+        assert(min != null && max != null && min <= max),
+        assert(handlerAnimation != null),
+        assert(activeTrackBarHeight != null),
+        assert(inactiveTrackBarHeight != null),
+        super(key: key);
 
   @override
   _FlutterSliderState createState() => _FlutterSliderState();
@@ -123,6 +130,11 @@ class _FlutterSliderState extends State<FlutterSlider>
   AnimationController _leftTooltipAnimationController;
   Animation<Offset> _leftTooltipAnimation;
 
+  AnimationController _leftHandlerScaleAnimationController;
+  Animation<double> _leftHandlerScaleAnimation;
+  AnimationController _rightHandlerScaleAnimationController;
+  Animation<double> _rightHandlerScaleAnimation;
+
   double _originalLowerValue;
   double _originalUpperValue;
 
@@ -138,6 +150,7 @@ class _FlutterSliderState extends State<FlutterSlider>
         child: Icon(Icons.chevron_left, color: Colors.black38),
         handlerHeight: _handlersHeight,
         handlerWidth: _handlersWidth,
+        animation: _rightHandlerScaleAnimation,
       );
     } else {
       _finalRightHandlerWidth = widget.rightHandler.width;
@@ -149,6 +162,7 @@ class _FlutterSliderState extends State<FlutterSlider>
         handlerHeight: _finalRightHandlerHeight,
         touchZone: widget.touchZone,
         displayTestTouchZone: widget.displayTestTouchZone,
+        animation: _rightHandlerScaleAnimation,
       );
     }
 
@@ -164,6 +178,7 @@ class _FlutterSliderState extends State<FlutterSlider>
         child: Icon(hIcon, color: Colors.black38),
         handlerHeight: _handlersHeight,
         handlerWidth: _handlersWidth,
+        animation: _leftHandlerScaleAnimation,
       );
     } else {
       _finalLeftHandlerWidth = widget.handler.width;
@@ -175,6 +190,7 @@ class _FlutterSliderState extends State<FlutterSlider>
         handlerHeight: _finalLeftHandlerHeight,
         touchZone: widget.touchZone,
         displayTestTouchZone: widget.displayTestTouchZone,
+        animation: _leftHandlerScaleAnimation,
       );
     }
 
@@ -269,6 +285,23 @@ class _FlutterSliderState extends State<FlutterSlider>
     } else {
       _divisions = (_fakeMax / 1000) < 1000 ? _fakeMax : (_fakeMax / 1000);
     }
+
+    _leftHandlerScaleAnimationController = AnimationController(
+        duration: widget.handlerAnimation.duration, vsync: this);
+    _rightHandlerScaleAnimationController = AnimationController(
+        duration: widget.handlerAnimation.duration, vsync: this);
+    _leftHandlerScaleAnimation =
+        Tween(begin: 1.0, end: widget.handlerAnimation.scale).animate(
+            CurvedAnimation(
+                parent: _leftHandlerScaleAnimationController,
+                reverseCurve: widget.handlerAnimation.reverseCurve,
+                curve: widget.handlerAnimation.curve));
+    _rightHandlerScaleAnimation =
+        Tween(begin: 1.0, end: widget.handlerAnimation.scale).animate(
+            CurvedAnimation(
+                parent: _rightHandlerScaleAnimationController,
+                reverseCurve: widget.handlerAnimation.reverseCurve,
+                curve: widget.handlerAnimation.curve));
 
     _generateHandler();
 
@@ -403,6 +436,8 @@ class _FlutterSliderState extends State<FlutterSlider>
                 setState(() {});
               }
 
+              _leftHandlerScaleAnimationController.forward();
+
               _callbacks('onDragStarted');
             },
             onDragEnd: (_) {
@@ -412,6 +447,8 @@ class _FlutterSliderState extends State<FlutterSlider>
                   _leftHandlerWidget,
                 ];
               }
+
+              _leftHandlerScaleAnimationController.reverse();
 
               if (widget.alwaysShowTooltip == false) {
                 _leftTooltipOpacity = 0;
@@ -531,6 +568,8 @@ class _FlutterSliderState extends State<FlutterSlider>
                 setState(() {});
               }
 
+              _rightHandlerScaleAnimationController.forward();
+
               _callbacks('onDragStarted');
             },
             onDragEnd: (_) {
@@ -540,6 +579,8 @@ class _FlutterSliderState extends State<FlutterSlider>
                   _rightHandlerWidget,
                 ];
               }
+
+              _rightHandlerScaleAnimationController.reverse();
 
               if (widget.alwaysShowTooltip == false) {
                 _rightTooltipOpacity = 0;
@@ -818,6 +859,7 @@ class _RSDefaultHandler extends StatelessWidget {
   final double handlerHeight;
   final int touchZone;
   final bool displayTestTouchZone;
+  final Animation animation;
 
   _RSDefaultHandler(
       {this.id,
@@ -825,7 +867,8 @@ class _RSDefaultHandler extends StatelessWidget {
       this.handlerWidth,
       this.handlerHeight,
       this.touchZone,
-      this.displayTestTouchZone});
+      this.displayTestTouchZone,
+      this.animation});
 
   @override
   Widget build(BuildContext context) {
@@ -843,20 +886,23 @@ class _RSDefaultHandler extends StatelessWidget {
           ),
         ),
         Center(
-          child: Container(
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
+          child: ScaleTransition(
+            scale: animation,
+            child: Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
 //          border: Border.all(color: Colors.lightBlue, width: 4),
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 2,
-                      spreadRadius: 0.2,
-                      offset: Offset(0, 1))
-                ], color: Colors.white, shape: BoxShape.circle),
-            width: handlerWidth,
-            height: handlerHeight,
-            child: child,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 2,
+                        spreadRadius: 0.2,
+                        offset: Offset(0, 1))
+                  ], color: Colors.white, shape: BoxShape.circle),
+              width: handlerWidth,
+              height: handlerHeight,
+              child: child,
+            ),
           ),
         )
       ]),
@@ -871,6 +917,7 @@ class _RSInputHandler extends StatelessWidget {
   final double handlerHeight;
   final int touchZone;
   final bool displayTestTouchZone;
+  final Animation animation;
 
   _RSInputHandler(
       {this.id,
@@ -878,7 +925,8 @@ class _RSInputHandler extends StatelessWidget {
       this.handlerWidth,
       this.handlerHeight,
       this.touchZone,
-      this.displayTestTouchZone});
+      this.displayTestTouchZone,
+      this.animation});
 
   @override
   Widget build(BuildContext context) {
@@ -896,11 +944,13 @@ class _RSInputHandler extends StatelessWidget {
             ),
           ),
           Center(
-              child: Container(
-            height: handler.height,
-            width: handler.width,
-            child: handler.child,
-          ))
+              child: ScaleTransition(
+                  scale: animation,
+                  child: Container(
+                    height: handler.height,
+                    width: handler.width,
+                    child: handler.child,
+                  )))
         ]));
   }
 }
@@ -920,4 +970,18 @@ class SliderIgnoreSteps {
 
   SliderIgnoreSteps({this.from, this.to})
       : assert(from != null && to != null && from <= to);
+}
+
+class SliderHandlerAnimation {
+  final Curve curve;
+  final Curve reverseCurve;
+  final Duration duration;
+  final double scale;
+
+  const SliderHandlerAnimation(
+      {this.curve = Curves.elasticOut,
+      this.reverseCurve = Curves.bounceIn,
+      this.duration = const Duration(milliseconds: 600),
+      this.scale = 1.4})
+      : assert(curve != null && duration != null && scale != null);
 }

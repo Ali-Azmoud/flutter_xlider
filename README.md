@@ -135,6 +135,29 @@ FlutterSlider(
 
 ![](images/range-customized.gif)
 
+### Handler Scale Animation
+
+You can control the scale animation type of your handlers, it's duration and it's scale size using `handlerScaleAnimation`  
+`handlerScaleAnimation` accepts a `SliderHandlerAnimation` class which has 4 properties as following
+
+```dart
+FlutterSlider(
+  ...
+    handlerAnimation: SliderHandlerAnimation(
+      curve: Curves.elasticOut,
+      reverseCurve: Curves.bounceIn,
+      duration: Duration(milliseconds: 500),
+      scale: 1.5
+    ),
+  ...
+)
+```
+
+![](images/range-handler-animation.gif)
+
+**if you don't want scale animation, then just pass `1` to `scale` property**  
+**if you don't want `reverseCurve`, make it null**
+
 
 ## Controls
 

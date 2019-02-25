@@ -2,7 +2,7 @@
 
 A material design slider and range slider with rtl support and lots of options and customizations for flutter
 
-## <span style="color: red"> Version 1.0.0 and above will break functionality of older (beta) versions. </span>
+### Version 1.0.0 and above will break functionality of older (beta) versions.
 
 ## Get Started
 
@@ -130,7 +130,7 @@ FlutterSlider(
 
 ## Trackbars
 
-to customize track bars you can use `FlutterSliderTrackBar`. you can see the details here
+to customize track bars you can use `FlutterSliderTrackBar`. [You can see the details here](https://pub.dartlang.org/documentation/flutter_xlider/latest/flutter_xlider/FlutterSliderTrackBar-class.html)
 
 ```dart
 FlutterSlider(
@@ -146,7 +146,7 @@ FlutterSlider(
 
 ## Tooltips
 
-in order to customize your tooltips, you can use `FlutterSliderTooltip` class. you can see all properties here
+in order to customize your tooltips, you can use `FlutterSliderTooltip` class. [You can see all properties here](https://pub.dartlang.org/documentation/flutter_xlider/latest/flutter_xlider/FlutterSliderTooltip/FlutterSliderTooltip.html)
 
 ```dart
 FlutterSlider(

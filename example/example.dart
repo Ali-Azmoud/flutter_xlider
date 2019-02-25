@@ -45,15 +45,15 @@ class _MyHomePageState extends State<MyHomePage> {
             child: FlutterSlider(
               values: [60, 160],
 //              ignoreSteps: [
-//                SliderIgnoreSteps(from: 120, to: 150),
-//                SliderIgnoreSteps(from: 160, to: 190),
+//                FlutterSliderIgnoreSteps(from: 120, to: 150),
+//                FlutterSliderIgnoreSteps(from: 160, to: 190),
 //              ],
               max: 200,
               min: 50,
               maximumDistance: 300,
               rangeSlider: true,
               rtl: true,
-              handlerAnimation: SliderHandlerAnimation(
+              handlerAnimation: FlutterSliderHandlerAnimation(
                   curve: Curves.elasticOut,
                   reverseCurve: null,
                   duration: Duration(milliseconds: 700),
@@ -75,23 +75,28 @@ class _MyHomePageState extends State<MyHomePage> {
 //rtl: true,
 //                touchZone: 2,
                 ignoreSteps: [
-                  SliderIgnoreSteps(from: 8000, to: 12000),
-                  SliderIgnoreSteps(from: 18000, to: 22000),
+                  FlutterSliderIgnoreSteps(from: 8000, to: 12000),
+                  FlutterSliderIgnoreSteps(from: 18000, to: 22000),
                 ],
                 max: 25000,
                 min: 0,
                 divisions: 25,
-                tooltipNumberFormat: intl.NumberFormat(),
 //displayTestTouchZone: true,
                 jump: true,
 
-                activeTrackBarColor: Colors.redAccent,
-                activeTrackBarHeight: 5,
-                leftInactiveTrackBarColor: Colors.greenAccent.withOpacity(0.5),
+                trackBar: FlutterSliderTrackBar(
+                  activeTrackBarColor: Colors.redAccent,
+                  activeTrackBarHeight: 5,
+                  leftInactiveTrackBarColor: Colors.greenAccent.withOpacity(0.5),
+                ),
+                tooltip: FlutterSliderTooltip(
+                  textStyle: TextStyle(fontSize: 17, color: Colors.lightBlue),
+                  numberFormat: intl.NumberFormat(),
+                ),
+
                 disabled: false,
 
-                tooltipTextStyle:
-                    TextStyle(fontSize: 17, color: Colors.lightBlue),
+
                 handler: SizedBox(
                     width: 20,
                     height: 50,
@@ -126,6 +131,48 @@ class _MyHomePageState extends State<MyHomePage> {
                   setState(() {});
                 },
               )),
+
+          Container(
+              margin: EdgeInsets.only(top: 50, left: 20, right: 20),
+              alignment: Alignment.centerLeft,
+              child: FlutterSlider(
+                values: [3000, 17000],
+                rangeSlider: true,
+//rtl: true,
+//                touchZone: 2,
+//                ignoreSteps: [
+//                  FlutterSliderIgnoreSteps(from: 8000, to: 12000),
+//                  FlutterSliderIgnoreSteps(from: 18000, to: 22000),
+//                ],
+                max: 25000,
+                min: 0,
+                divisions: 25,
+//displayTestTouchZone: true,
+                jump: true,
+                trackBar: FlutterSliderTrackBar(
+                  activeTrackBarColor: Colors.blue.withOpacity(0.6),
+                  inactiveTrackBarHeight: 2,
+                  activeTrackBarHeight: 3,
+                ),
+
+                disabled: false,
+
+                handler: customHandler(Icons.chevron_right),
+                rightHandler: customHandler(Icons.chevron_left),
+                tooltip: FlutterSliderTooltip(
+                  numberFormat: intl.NumberFormat(),
+                  leftPrefix: Icon(Icons.attach_money, size: 19, color: Colors.black45,),
+                  rightSuffix: Icon(Icons.attach_money, size: 19, color: Colors.black45,),
+                  textStyle: TextStyle(fontSize: 17, color: Colors.black45),
+                ),
+
+                onDragging: (lowerValue, upperValue) {
+                  _lowerValue = lowerValue;
+                  _upperValue = upperValue;
+                  setState(() {});
+                },
+              )),
+
           Container(
             margin: EdgeInsets.only(top: 20, left: 20, right: 20),
             alignment: Alignment.centerLeft,
@@ -133,11 +180,13 @@ class _MyHomePageState extends State<MyHomePage> {
               key: Key('3343'),
               values: [300000000, 1600000000],
               rangeSlider: true,
-              alwaysShowTooltip: true,
+              tooltip: FlutterSliderTooltip(
+                alwaysShowTooltip: true,
+                numberFormat: intl.NumberFormat.compact(),
+              ),
               max: 2000000000,
               min: 0,
               divisions: 20,
-              tooltipNumberFormat: intl.NumberFormat.compact(),
               jump: true,
               onDragging: (lowerValue, upperValue) {
                 _lowerValue = lowerValue;
@@ -169,6 +218,39 @@ class _MyHomePageState extends State<MyHomePage> {
           SizedBox(height: 25),
           Text('Upper Value: ' + _upperValue.toString())
         ],
+      ),
+    );
+  }
+
+
+  Widget customHandler(IconData icon){
+    return SizedBox(
+      width: 35,
+      height: 35,
+      child: Container(
+        child: Container(
+          margin: EdgeInsets.all(5),
+          decoration: BoxDecoration(
+              color: Colors.blue.withOpacity(0.3),
+              shape: BoxShape.circle
+          ),
+          child: Icon(
+            icon,
+            color: Colors.white,
+            size: 23,
+          ),
+        ),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+                color: Colors.blue.withOpacity(0.3),
+                spreadRadius: 0.05,
+                blurRadius: 5,
+                offset: Offset(0, 1))
+          ],
+        ),
       ),
     );
   }

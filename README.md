@@ -2,6 +2,7 @@
 
 A material design slider and range slider with rtl support and lots of options and customizations for flutter
 
+## <span style="color: red"> Version 1.0.0 and above will break functionality of older (beta) versions. </span>
 
 ## Get Started
 
@@ -57,9 +58,8 @@ FlutterSlider(
 
 ![](images/range-1.gif)
 
-## Customization
+## Handlers
 
-### Handlers
 You can customize handlers using `handler` and `rightHandler` properties.  
 `width` and `height` are required for custom handlers, so we use `SizedBox` as a wrapper
 
@@ -81,8 +81,7 @@ FlutterSlider(
       ),
       decoration: BoxDecoration(
           color: Colors.white,
-          border:
-              Border.all(color: Colors.black.withOpacity(0.12))),
+          border: Border.all(color: Colors.black.withOpacity(0.12))),
     ),
   ),
   rightHandler: SizedBox(
@@ -96,8 +95,7 @@ FlutterSlider(
       ),
       decoration: BoxDecoration(
           color: Colors.white,
-          border:
-              Border.all(color: Colors.black.withOpacity(0.12))),
+          border: Border.all(color: Colors.black.withOpacity(0.12))),
     ),
   ),
   ...
@@ -105,45 +103,15 @@ FlutterSlider(
 
 ```
 
-### Trackbars
-
-```dart
-FlutterSlider(
-  ...
-    activeTrackBarColor: Colors.redAccent,
-    activeTrackBarHeight: 5,
-    inactiveTrackBarHeight: 2,
-    leftInactiveTrackBarColor: Colors.greenAccent.withOpacity(0.5),
-  ...
-)
-```
-
-### Tooltips
-
-```dart
-FlutterSlider(
-  ...
-  tooltipTextStyle: TextStyle(fontSize: 17, color: Colors.white),
-  tooltipBox: FlutterSliderTooltip(
-    decoration: BoxDecoration(
-      color: Colors.red.withOpacity(0.5),
-    )
-  ),
-  ...
-)
-```
-
-![](images/range-customized.gif)
-
 ### Handler Scale Animation
 
-You can control the scale animation type of your handlers, it's duration and it's scale size using `handlerScaleAnimation`  
-`handlerScaleAnimation` accepts a `SliderHandlerAnimation` class which has 4 properties as following
+You can control the scale animation type of your handlers, it's duration and it's scale size using `handlerAnimation`    
+`handlerAnimation` accepts a `FlutterSliderHandlerAnimation` class which has 4 properties as following
 
 ```dart
 FlutterSlider(
   ...
-    handlerAnimation: SliderHandlerAnimation(
+    handlerAnimation: FlutterSliderHandlerAnimation(
       curve: Curves.elasticOut,
       reverseCurve: Curves.bounceIn,
       duration: Duration(milliseconds: 500),
@@ -156,7 +124,83 @@ FlutterSlider(
 ![](images/range-handler-animation.gif)
 
 **if you don't want scale animation, then just pass `1` to `scale` property**  
-**if you don't want `reverseCurve`, make it null**
+**if you don't want `reverseCurve`, just ignore it. default is null**
+
+
+
+## Trackbars
+
+to customize track bars you can use `FlutterSliderTrackBar`. you can see the details here
+
+```dart
+FlutterSlider(
+  ...
+    trackBar: FlutterSliderTrackBar(
+      activeTrackBarColor: Colors.redAccent,
+      activeTrackBarHeight: 5,
+      leftInactiveTrackBarColor: Colors.greenAccent.withOpacity(0.5),
+    ),
+  ...
+)
+```
+
+## Tooltips
+
+in order to customize your tooltips, you can use `FlutterSliderTooltip` class. you can see all properties here
+
+```dart
+FlutterSlider(
+  ...
+  tooltip: FlutterSliderTooltip(
+    textStyle: TextStyle(fontSize: 17, color: Colors.white),
+    boxStyle: FlutterSliderTooltipBox(
+      decoration: BoxDecoration(
+        color: Colors.redAccent.withOpacity(0.7)
+      )
+    )
+  ),
+  ...
+)
+```
+
+![](images/range-customized.gif)
+
+### Tooltip Prefix
+
+You can use `leftPrefix`, `leftSuffix`, `rightPrefix`, `rightSuffix` to add your desired widget around tooltip content.
+
+```dart
+FlutterSlider(
+  ...
+    tooltip: FlutterSliderTooltip(
+      leftPrefix: Icon(Icons.attach_money, size: 19, color: Colors.black45,),
+      rightSuffix: Icon(Icons.attach_money, size: 19, color: Colors.black45,),
+    ),
+  ...
+)
+```
+
+![](images/range-tooltip-prefix-suffix.gif)
+
+
+### Tooltip Number Format
+
+you can customize tooltip numbers by using `NumberFormat` class  
+here is an example  
+
+```dart
+FlutterSlider(
+  ...
+    tooltip: FlutterSliderTooltip(
+      numberFormat: intl.NumberFormat(),
+      // numberFormat: intl.compact(),
+    ),
+  ...
+)
+```
+you can find more about [NumberFormat](https://docs.flutter.io/flutter/intl/NumberFormat-class.html)
+
+![](images/range-compact.gif)
 
 
 ## Controls
@@ -194,8 +238,8 @@ this property accepts a simple class to define `from` and `to` ranges.
 FlutterSlider(
   ...
     ignoreSteps: [
-      SliderIgnoreSteps(from: 8000, to: 12000),
-      SliderIgnoreSteps(from: 18000, to: 22000),
+      FlutterSliderIgnoreSteps(from: 8000, to: 12000),
+      FlutterSliderIgnoreSteps(from: 18000, to: 22000),
     ],
   ...
 )
@@ -231,22 +275,7 @@ FlutterSlider(
 
 ![](images/range-maximum-distance.gif)
 
-### Tooltip Number Format
 
-you can customize tooltip numbers by using `NumberFormat` class  
-here is an example  
-
-```dart
-FlutterSlider(
-  ...
-  tooltipNumberFormat: intl.NumberFormat(),
-  // tooltipNumberFormat: intl.compact(),
-  ...
-)
-```
-you can find more about [NumberFormat](https://docs.flutter.io/flutter/intl/NumberFormat-class.html)
-
-![](images/range-compact.gif)
 
 
 ### Always Show Tooltips

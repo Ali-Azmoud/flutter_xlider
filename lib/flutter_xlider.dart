@@ -16,23 +16,16 @@ class FlutterSlider extends StatefulWidget {
   final List<double> values;
   final bool rangeSlider;
   final bool rtl;
-  final bool alwaysShowTooltip;
-  final Color leftInactiveTrackBarColor;
-  final Color rightInactiveTrackBarColor;
-  final Color activeTrackBarColor;
-  final double activeTrackBarHeight;
-  final double inactiveTrackBarHeight;
   final bool jump;
-  final List<SliderIgnoreSteps> ignoreSteps;
+  final List<FlutterSliderIgnoreSteps> ignoreSteps;
   final bool disabled;
   final int touchZone;
   final bool displayTestTouchZone;
-  final TextStyle tooltipTextStyle;
-  final FlutterSliderTooltip tooltipBox;
-  final intl.NumberFormat tooltipNumberFormat;
   final double minimumDistance;
   final double maximumDistance;
-  final SliderHandlerAnimation handlerAnimation;
+  final FlutterSliderHandlerAnimation handlerAnimation;
+  final FlutterSliderTooltip tooltip;
+  final FlutterSliderTrackBar trackBar;
 
   FlutterSlider(
       {this.key,
@@ -42,34 +35,24 @@ class FlutterSlider extends StatefulWidget {
       this.handler,
       this.rightHandler,
       this.divisions,
-      this.tooltipTextStyle =
-          const TextStyle(fontSize: 12, color: Colors.black38),
-      this.tooltipBox,
       this.onDragStarted,
       this.onDragCompleted,
       this.onDragging,
       this.rangeSlider = false,
-      this.alwaysShowTooltip = false,
-      this.leftInactiveTrackBarColor = const Color(0x110000ff),
-      this.rightInactiveTrackBarColor = const Color(0x110000ff),
-      this.activeTrackBarColor = const Color(0xff2196F3),
-      this.activeTrackBarHeight = 3.5,
-      this.inactiveTrackBarHeight = 3,
       this.rtl = false,
       this.jump = false,
       this.ignoreSteps = const [],
       this.disabled = false,
       this.touchZone = 2,
       this.displayTestTouchZone = false,
-      this.tooltipNumberFormat,
       this.minimumDistance = 0,
       this.maximumDistance = 0,
-      this.handlerAnimation = const SliderHandlerAnimation()})
+      this.tooltip,
+      this.trackBar = const FlutterSliderTrackBar(),
+      this.handlerAnimation = const FlutterSliderHandlerAnimation()})
       : assert(touchZone != null && (touchZone >= 1 && touchZone <= 5)),
         assert(min != null && max != null && min <= max),
         assert(handlerAnimation != null),
-        assert(activeTrackBarHeight != null),
-        assert(inactiveTrackBarHeight != null),
         super(key: key);
 
   @override
@@ -246,8 +229,20 @@ class _FlutterSliderState extends State<FlutterSlider>
       throw 'lower and upper distance is less than minimum distance';
     }
 
-    _rightTooltipOpacity = (widget.alwaysShowTooltip == true) ? 1 : 0;
-    _leftTooltipOpacity = (widget.alwaysShowTooltip == true) ? 1 : 0;
+    _tooltipData = widget.tooltip ?? FlutterSliderTooltip();
+    _tooltipData.boxStyle ??= FlutterSliderTooltipBox(
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.black12, width: 0.5),
+            color: Color(0xffffffff)));
+    _tooltipData.textStyle ??= TextStyle(fontSize: 12, color: Colors.black38);
+    _tooltipData.leftPrefix ??= Container();
+    _tooltipData.leftSuffix ??= Container();
+    _tooltipData.rightPrefix ??= Container();
+    _tooltipData.rightSuffix ??= Container();
+    _tooltipData.alwaysShowTooltip ??= false;
+
+    _rightTooltipOpacity = (_tooltipData.alwaysShowTooltip == true) ? 1 : 0;
+    _leftTooltipOpacity = (_tooltipData.alwaysShowTooltip == true) ? 1 : 0;
 
     _outputLowerValue = _displayRealValue(_lowerValue);
     _outputUpperValue = _displayRealValue(_upperValue);
@@ -273,12 +268,8 @@ class _FlutterSliderState extends State<FlutterSlider>
     _finalLeftHandlerHeight = _handlersHeight;
     _finalRightHandlerHeight = _handlersHeight;
 
-    _tooltipData = (widget.tooltipBox != null)
-        ? widget.tooltipBox
-        : FlutterSliderTooltip(
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.black12, width: 0.5),
-                color: Color(0xffffffff)));
+//    _plusSpinnerStyle = widget.plusButton ?? SpinnerButtonStyle();
+//    _plusSpinnerStyle.child ??= Icon(Icons.add, size: 16);
 
     if (widget.divisions != null) {
       _divisions = widget.divisions;
@@ -430,7 +421,7 @@ class _FlutterSliderState extends State<FlutterSlider>
         child: Draggable(
             onDragCompleted: () {},
             onDragStarted: () {
-              if (widget.alwaysShowTooltip == false) {
+              if (_tooltipData.alwaysShowTooltip == false) {
                 _leftTooltipOpacity = 1;
                 _leftTooltipAnimationController.forward();
                 setState(() {});
@@ -452,7 +443,7 @@ class _FlutterSliderState extends State<FlutterSlider>
                   animation: _leftHandlerScaleAnimation,
                   controller: _leftHandlerScaleAnimationController);
 
-              if (widget.alwaysShowTooltip == false) {
+              if (_tooltipData.alwaysShowTooltip == false) {
                 _leftTooltipOpacity = 0;
                 _leftTooltipAnimationController.reset();
               }
@@ -505,7 +496,7 @@ class _FlutterSliderState extends State<FlutterSlider>
           }
 
           if (widget.ignoreSteps.length > 0) {
-            for (SliderIgnoreSteps steps in widget.ignoreSteps) {
+            for (FlutterSliderIgnoreSteps steps in widget.ignoreSteps) {
               if (!((widget.rtl == false &&
                       (rx >= steps.from && rx <= steps.to) == false) ||
                   (widget.rtl == true &&
@@ -564,7 +555,7 @@ class _FlutterSliderState extends State<FlutterSlider>
         child: Draggable(
             onDragCompleted: () {},
             onDragStarted: () {
-              if (widget.alwaysShowTooltip == false) {
+              if (_tooltipData.alwaysShowTooltip == false) {
                 _rightTooltipOpacity = 1;
                 _rightTooltipAnimationController.forward();
                 setState(() {});
@@ -595,7 +586,7 @@ class _FlutterSliderState extends State<FlutterSlider>
                     controller: _rightHandlerScaleAnimationController);
               }
 
-              if (widget.alwaysShowTooltip == false) {
+              if (_tooltipData.alwaysShowTooltip == false) {
                 _rightTooltipOpacity = 0;
                 _rightTooltipAnimationController.reset();
               }
@@ -651,7 +642,7 @@ class _FlutterSliderState extends State<FlutterSlider>
           }
 
           if (widget.ignoreSteps.length > 0) {
-            for (SliderIgnoreSteps steps in widget.ignoreSteps) {
+            for (FlutterSliderIgnoreSteps steps in widget.ignoreSteps) {
               if (!((widget.rtl == false &&
                       (rx >= steps.from && rx <= steps.to) == false) ||
                   (widget.rtl == true &&
@@ -733,17 +724,22 @@ class _FlutterSliderState extends State<FlutterSlider>
 
   Positioned _tooltip(
       {String side, double value, double opacity, Animation animation}) {
+    Widget prefix;
+    Widget suffix;
     if (side == 'left') {
+      prefix = _tooltipData.leftPrefix;
+      suffix = _tooltipData.leftSuffix;
       if (widget.rangeSlider == false)
         return Positioned(
           child: Container(),
         );
+    } else {
+      prefix = _tooltipData.rightPrefix;
+      suffix = _tooltipData.rightSuffix;
     }
-    String numberFormat;
-    if (widget.tooltipNumberFormat == null)
-      numberFormat = intl.NumberFormat().format(value);
-    else
-      numberFormat = widget.tooltipNumberFormat.format(value);
+    String numberFormat = value.toString();
+    if (_tooltipData.numberFormat != null)
+      numberFormat = _tooltipData.numberFormat.format(value);
 
     Widget tooltipWidget = IgnorePointer(
         child: Center(
@@ -751,23 +747,30 @@ class _FlutterSliderState extends State<FlutterSlider>
         alignment: Alignment.center,
         child: Container(
             padding: EdgeInsets.all(8),
-            decoration: _tooltipData.decoration,
-            foregroundDecoration: _tooltipData.foregroundDecoration,
-            transform: _tooltipData.transform,
-            child: Text(numberFormat, style: widget.tooltipTextStyle)),
+            decoration: _tooltipData.boxStyle.decoration,
+            foregroundDecoration: _tooltipData.boxStyle.foregroundDecoration,
+            transform: _tooltipData.boxStyle.transform,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                prefix,
+                Text(numberFormat, style: _tooltipData.textStyle),
+                suffix,
+              ],
+            )),
       ),
     ));
 
     double top = -(_containerHeight - _handlersHeight);
-    if (widget.alwaysShowTooltip == false) {
+    if (_tooltipData.alwaysShowTooltip == false) {
       top = 0;
       tooltipWidget =
           SlideTransition(position: animation, child: tooltipWidget);
     }
 
     return Positioned(
-      left: -20,
-      right: -20,
+      left: -50,
+      right: -50,
       top: top,
       child: Opacity(
         opacity: opacity,
@@ -792,8 +795,8 @@ class _FlutterSliderState extends State<FlutterSlider>
       bottom: 0,
       child: Center(
         child: Container(
-          height: widget.inactiveTrackBarHeight,
-          color: widget.leftInactiveTrackBarColor,
+          height: widget.trackBar.inactiveTrackBarHeight,
+          color: widget.trackBar.leftInactiveTrackBarColor,
         ),
       ),
     );
@@ -817,8 +820,8 @@ class _FlutterSliderState extends State<FlutterSlider>
       bottom: 0,
       child: Center(
         child: Container(
-          height: widget.inactiveTrackBarHeight,
-          color: widget.rightInactiveTrackBarColor,
+          height: widget.trackBar.inactiveTrackBarHeight,
+          color: widget.trackBar.rightInactiveTrackBarColor,
         ),
       ),
     );
@@ -841,8 +844,8 @@ class _FlutterSliderState extends State<FlutterSlider>
       bottom: 0,
       child: Center(
         child: Container(
-          height: widget.activeTrackBarHeight,
-          color: widget.activeTrackBarColor,
+          height: widget.trackBar.activeTrackBarHeight,
+          color: widget.trackBar.activeTrackBarColor,
         ),
       ),
     );
@@ -981,32 +984,73 @@ class _RSInputHandler extends StatelessWidget {
 }
 
 class FlutterSliderTooltip {
+  TextStyle textStyle;
+  FlutterSliderTooltipBox boxStyle;
+  Widget leftPrefix;
+  Widget leftSuffix;
+  Widget rightPrefix;
+  Widget rightSuffix;
+  intl.NumberFormat numberFormat;
+  bool alwaysShowTooltip;
+
+  FlutterSliderTooltip(
+      {this.textStyle,
+      this.boxStyle,
+      this.leftPrefix,
+      this.leftSuffix,
+      this.rightPrefix,
+      this.rightSuffix,
+      this.numberFormat,
+      this.alwaysShowTooltip});
+}
+
+class FlutterSliderTooltipBox {
   final BoxDecoration decoration;
   final BoxDecoration foregroundDecoration;
   final Matrix4 transform;
 
-  FlutterSliderTooltip(
+  const FlutterSliderTooltipBox(
       {this.decoration, this.foregroundDecoration, this.transform});
 }
 
-class SliderIgnoreSteps {
+class FlutterSliderTrackBar {
+  final Color leftInactiveTrackBarColor;
+  final Color rightInactiveTrackBarColor;
+  final Color activeTrackBarColor;
+  final double activeTrackBarHeight;
+  final double inactiveTrackBarHeight;
+
+  const FlutterSliderTrackBar({
+    this.leftInactiveTrackBarColor = const Color(0x110000ff),
+    this.rightInactiveTrackBarColor = const Color(0x110000ff),
+    this.activeTrackBarColor = const Color(0xff2196F3),
+    this.activeTrackBarHeight = 3.5,
+    this.inactiveTrackBarHeight = 3,
+  })  : assert(leftInactiveTrackBarColor != null &&
+            rightInactiveTrackBarColor != null &&
+            activeTrackBarColor != null),
+        assert(inactiveTrackBarHeight != null && inactiveTrackBarHeight > 0),
+        assert(activeTrackBarHeight != null && activeTrackBarHeight > 0);
+}
+
+class FlutterSliderIgnoreSteps {
   final double from;
   final double to;
 
-  SliderIgnoreSteps({this.from, this.to})
+  FlutterSliderIgnoreSteps({this.from, this.to})
       : assert(from != null && to != null && from <= to);
 }
 
-class SliderHandlerAnimation {
+class FlutterSliderHandlerAnimation {
   final Curve curve;
   final Curve reverseCurve;
   final Duration duration;
   final double scale;
 
-  const SliderHandlerAnimation(
+  const FlutterSliderHandlerAnimation(
       {this.curve = Curves.elasticOut,
       this.reverseCurve,
       this.duration = const Duration(milliseconds: 700),
-      this.scale = 1.4})
+      this.scale = 1.3})
       : assert(curve != null && duration != null && scale != null);
 }

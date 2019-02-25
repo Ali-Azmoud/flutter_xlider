@@ -9,3 +9,11 @@
 ## [0.1.5] - 02/24/2019
 
 * added handler scale animation
+
+## [1.0.0] - 02/24/2019
+
+* added prefix and suffix for tooltip
+* some cleanups
+* bug fix
+* rename some classes and change input types
+* this version will break functionality of older versions

@@ -17,3 +17,9 @@
 * bug fix
 * rename some classes and change input types
 * this version will break functionality of older versions
+
+## [1.0.1] - 02/26/2019
+
+* scroll layouts bug fixed
+* disabled tooltip feature added
+* initial handlers z-index positions bug fixed

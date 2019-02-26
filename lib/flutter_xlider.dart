@@ -240,6 +240,7 @@ class _FlutterSliderState extends State<FlutterSlider>
     _tooltipData.rightPrefix ??= Container();
     _tooltipData.rightSuffix ??= Container();
     _tooltipData.alwaysShowTooltip ??= false;
+    _tooltipData.disabled ??= false;
 
     _rightTooltipOpacity = (_tooltipData.alwaysShowTooltip == true) ? 1 : 0;
     _leftTooltipOpacity = (_tooltipData.alwaysShowTooltip == true) ? 1 : 0;
@@ -262,6 +263,8 @@ class _FlutterSliderState extends State<FlutterSlider>
       _leftHandlerWidget,
       _rightHandlerWidget,
     ];
+
+    _arrangeHandlersZIndex();
 
     _finalLeftHandlerWidth = _handlersWidth;
     _finalRightHandlerWidth = _handlersWidth;
@@ -419,39 +422,6 @@ class _FlutterSliderState extends State<FlutterSlider>
       bottom: 0,
       child: Listener(
         child: Draggable(
-            onDragCompleted: () {},
-            onDragStarted: () {
-              if (_tooltipData.alwaysShowTooltip == false) {
-                _leftTooltipOpacity = 1;
-                _leftTooltipAnimationController.forward();
-                setState(() {});
-              }
-
-              _leftHandlerScaleAnimationController.forward();
-
-              _callbacks('onDragStarted');
-            },
-            onDragEnd: (_) {
-              if (_lowerValue >= (_fakeMax / 2)) {
-                _positionedItems = [
-                  _rightHandlerWidget,
-                  _leftHandlerWidget,
-                ];
-              }
-
-              _stopHandlerAnimation(
-                  animation: _leftHandlerScaleAnimation,
-                  controller: _leftHandlerScaleAnimationController);
-
-              if (_tooltipData.alwaysShowTooltip == false) {
-                _leftTooltipOpacity = 0;
-                _leftTooltipAnimationController.reset();
-              }
-
-              setState(() {});
-
-              _callbacks('onDragCompleted');
-            },
             axis: Axis.horizontal,
             child: Stack(
               overflow: Overflow.visible,
@@ -540,7 +510,34 @@ class _FlutterSliderState extends State<FlutterSlider>
 
           _callbacks('onDragging');
         },
-        onPointerDown: (_) {},
+        onPointerDown: (_) {
+          if (!_tooltipData.disabled &&
+              _tooltipData.alwaysShowTooltip == false) {
+            _leftTooltipOpacity = 1;
+            _leftTooltipAnimationController.forward();
+            setState(() {});
+          }
+
+          _leftHandlerScaleAnimationController.forward();
+
+          _callbacks('onDragStarted');
+        },
+        onPointerUp: (_) {
+          _arrangeHandlersZIndex();
+
+          _stopHandlerAnimation(
+              animation: _leftHandlerScaleAnimation,
+              controller: _leftHandlerScaleAnimationController);
+
+          if (_tooltipData.alwaysShowTooltip == false) {
+            _leftTooltipOpacity = 0;
+            _leftTooltipAnimationController.reset();
+          }
+
+          setState(() {});
+
+          _callbacks('onDragCompleted');
+        },
       ),
     );
   }
@@ -553,48 +550,6 @@ class _FlutterSliderState extends State<FlutterSlider>
       bottom: 0,
       child: Listener(
         child: Draggable(
-            onDragCompleted: () {},
-            onDragStarted: () {
-              if (_tooltipData.alwaysShowTooltip == false) {
-                _rightTooltipOpacity = 1;
-                _rightTooltipAnimationController.forward();
-                setState(() {});
-              }
-
-              if (widget.rangeSlider == false)
-                _leftHandlerScaleAnimationController.forward();
-              else
-                _rightHandlerScaleAnimationController.forward();
-
-              _callbacks('onDragStarted');
-            },
-            onDragEnd: (_) {
-              if (_upperValue <= (_fakeMax / 2)) {
-                _positionedItems = [
-                  _leftHandlerWidget,
-                  _rightHandlerWidget,
-                ];
-              }
-
-              if (widget.rangeSlider == false) {
-                _stopHandlerAnimation(
-                    animation: _leftHandlerScaleAnimation,
-                    controller: _leftHandlerScaleAnimationController);
-              } else {
-                _stopHandlerAnimation(
-                    animation: _rightHandlerScaleAnimation,
-                    controller: _rightHandlerScaleAnimationController);
-              }
-
-              if (_tooltipData.alwaysShowTooltip == false) {
-                _rightTooltipOpacity = 0;
-                _rightTooltipAnimationController.reset();
-              }
-
-              setState(() {});
-
-              _callbacks('onDragCompleted');
-            },
             axis: Axis.horizontal,
             child: Stack(
               overflow: Overflow.visible,
@@ -692,6 +647,43 @@ class _FlutterSliderState extends State<FlutterSlider>
 
           _callbacks('onDragging');
         },
+        onPointerDown: (_) {
+          if (!_tooltipData.disabled &&
+              _tooltipData.alwaysShowTooltip == false) {
+            _rightTooltipOpacity = 1;
+            _rightTooltipAnimationController.forward();
+            setState(() {});
+          }
+
+          if (widget.rangeSlider == false)
+            _leftHandlerScaleAnimationController.forward();
+          else
+            _rightHandlerScaleAnimationController.forward();
+
+          _callbacks('onDragStarted');
+        },
+        onPointerUp: (_) {
+          _arrangeHandlersZIndex();
+
+          if (widget.rangeSlider == false) {
+            _stopHandlerAnimation(
+                animation: _leftHandlerScaleAnimation,
+                controller: _leftHandlerScaleAnimationController);
+          } else {
+            _stopHandlerAnimation(
+                animation: _rightHandlerScaleAnimation,
+                controller: _rightHandlerScaleAnimationController);
+          }
+
+          if (_tooltipData.alwaysShowTooltip == false) {
+            _rightTooltipOpacity = 0;
+            _rightTooltipAnimationController.reset();
+          }
+
+          setState(() {});
+
+          _callbacks('onDragCompleted');
+        },
       ),
     );
   }
@@ -724,6 +716,11 @@ class _FlutterSliderState extends State<FlutterSlider>
 
   Positioned _tooltip(
       {String side, double value, double opacity, Animation animation}) {
+    if (_tooltipData.disabled)
+      return Positioned(
+        child: Container(),
+      );
+
     Widget prefix;
     Widget suffix;
     if (side == 'left') {
@@ -878,6 +875,19 @@ class _FlutterSliderState extends State<FlutterSlider>
   double _displayRealValue(double value) {
     return value + widget.min;
   }
+
+  void _arrangeHandlersZIndex() {
+    if (_lowerValue >= (_fakeMax / 2))
+      _positionedItems = [
+        _rightHandlerWidget,
+        _leftHandlerWidget,
+      ];
+    else
+      _positionedItems = [
+        _leftHandlerWidget,
+        _rightHandlerWidget,
+      ];
+  }
 }
 
 class _RSDefaultHandler extends StatelessWidget {
@@ -992,6 +1002,7 @@ class FlutterSliderTooltip {
   Widget rightSuffix;
   intl.NumberFormat numberFormat;
   bool alwaysShowTooltip;
+  bool disabled;
 
   FlutterSliderTooltip(
       {this.textStyle,
@@ -1001,7 +1012,8 @@ class FlutterSliderTooltip {
       this.rightPrefix,
       this.rightSuffix,
       this.numberFormat,
-      this.alwaysShowTooltip});
+      this.alwaysShowTooltip,
+      this.disabled});
 }
 
 class FlutterSliderTooltipBox {

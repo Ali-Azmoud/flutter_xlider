@@ -192,8 +192,8 @@ here is an example
 FlutterSlider(
   ...
     tooltip: FlutterSliderTooltip(
-      numberFormat: intl.NumberFormat(),
-      // numberFormat: intl.compact(),
+      numberFormat: intl.compact(),
+      // numberFormat: intl.NumberFormat(),
     ),
   ...
 )
@@ -201,6 +201,20 @@ FlutterSlider(
 you can find more about [NumberFormat](https://docs.flutter.io/flutter/intl/NumberFormat-class.html)
 
 ![](images/range-compact.gif)
+
+
+### Disable tooltip
+
+To disable tooltips, use `disabled` in `FlutterSliderTooltip` class
+```dart
+FlutterSlider(
+  ...
+    tooltip: FlutterSliderTooltip(
+      disabled: true,
+    ),
+  ...
+)
+```
 
 
 ## Controls

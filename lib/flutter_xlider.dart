@@ -320,9 +320,7 @@ class _FlutterSliderState extends State<FlutterSlider>
   }
 
   _initialize(_) {
-    RenderBox containerRenderBox =
-        containerKey.currentContext.findRenderObject();
-    _containerLeft = containerRenderBox.localToGlobal(Offset.zero).dx;
+    _renderBoxInitialization();
 //    _containerTop = containerRenderBox.localToGlobal(Offset.zero).dy;
 
 //    print("CL:" + _containerLeft.toString());
@@ -362,8 +360,6 @@ class _FlutterSliderState extends State<FlutterSlider>
             (widget.touchZone * 20 / 2);
 
     setState(() {});
-
-    if (_handlersWidth == null) {}
   }
 
   @override
@@ -421,6 +417,7 @@ class _FlutterSliderState extends State<FlutterSlider>
       top: 0,
       bottom: 0,
       child: Listener(
+        key: Key('234'),
         child: Draggable(
             axis: Axis.horizontal,
             child: Stack(
@@ -511,6 +508,8 @@ class _FlutterSliderState extends State<FlutterSlider>
           _callbacks('onDragging');
         },
         onPointerDown: (_) {
+          _renderBoxInitialization();
+
           if (!_tooltipData.disabled &&
               _tooltipData.alwaysShowTooltip == false) {
             _leftTooltipOpacity = 1;
@@ -648,6 +647,8 @@ class _FlutterSliderState extends State<FlutterSlider>
           _callbacks('onDragging');
         },
         onPointerDown: (_) {
+          _renderBoxInitialization();
+
           if (!_tooltipData.disabled &&
               _tooltipData.alwaysShowTooltip == false) {
             _rightTooltipOpacity = 1;
@@ -887,6 +888,16 @@ class _FlutterSliderState extends State<FlutterSlider>
         _leftHandlerWidget,
         _rightHandlerWidget,
       ];
+  }
+
+  void _renderBoxInitialization() {
+    if (_containerLeft <= 0 ||
+        (MediaQuery.of(context).size.width - _constraintMaxWidth) <=
+            _containerLeft) {
+      RenderBox containerRenderBox =
+          containerKey.currentContext.findRenderObject();
+      _containerLeft = containerRenderBox.localToGlobal(Offset.zero).dx;
+    }
   }
 }
 

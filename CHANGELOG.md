@@ -23,3 +23,7 @@
 * scroll layouts bug fixed
 * disabled tooltip feature added
 * initial handlers z-index positions bug fixed
+
+## [1.0.2] - 02/26/2019
+
+* tab view and any other scrollable widget bug fixed

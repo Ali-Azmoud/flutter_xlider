@@ -84,7 +84,6 @@ FlutterSlider(
   ),
   ...
 )
-
 ```
 
 
@@ -213,7 +212,9 @@ tooltips always displayed if this property is set to `true`.
 ```dart
 FlutterSlider(
   ...
-  alwaysShowTooltip: true,
+  tooltip: FlutterSliderTooltip(
+    alwaysShowTooltip: true,
+  ),
   ...
 )
 ```

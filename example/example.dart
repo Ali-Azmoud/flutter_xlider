@@ -59,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   duration: Duration(milliseconds: 700),
                   scale: 1.4
               ),
-              onDragging: (lowerValue, upperValue) {
+              onDragging: (handlerIndex, lowerValue, upperValue) {
                 _lowerValue = lowerValue;
                 _upperValue = upperValue;
                 setState(() {});
@@ -80,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
                 max: 25000,
                 min: 0,
-                divisions: 25,
+                step: 100,
 //displayTestTouchZone: true,
                 jump: true,
 
@@ -93,39 +93,22 @@ class _MyHomePageState extends State<MyHomePage> {
                   textStyle: TextStyle(fontSize: 17, color: Colors.lightBlue),
                   numberFormat: intl.NumberFormat(),
                 ),
-
+                handler: FlutterSliderHandler(
+                  child: Material(
+                    type: MaterialType.canvas,
+                    color: Colors.orange,
+                    elevation: 3,
+                    child: Container(
+                        padding: EdgeInsets.all(5),
+                        child: Icon(Icons.adjust, size: 25,)),
+                  ),
+                ),
+                rightHandler: FlutterSliderHandler(
+                  icon: Icon(Icons.chevron_left, color: Colors.red, size: 24,),
+                ),
                 disabled: false,
 
-
-                handler: SizedBox(
-                    width: 20,
-                    height: 50,
-                    child: Container(
-                      child: Icon(
-                        Icons.view_headline,
-                        color: Colors.black54,
-                        size: 13,
-                      ),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(
-                              color: Colors.black.withOpacity(0.12))),
-                    )),
-                rightHandler: SizedBox(
-                    width: 20,
-                    height: 50,
-                    child: Container(
-                      child: Icon(
-                        Icons.view_headline,
-                        color: Colors.black54,
-                        size: 13,
-                      ),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(
-                              color: Colors.black.withOpacity(0.12))),
-                    )),
-                onDragging: (lowerValue, upperValue) {
+                onDragging: (handlerIndex, lowerValue, upperValue) {
                   _lowerValue = lowerValue;
                   _upperValue = upperValue;
                   setState(() {});
@@ -146,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
 //                ],
                 max: 25000,
                 min: 0,
-                divisions: 25,
+                step: 100,
 //displayTestTouchZone: true,
                 jump: true,
                 trackBar: FlutterSliderTrackBar(
@@ -166,7 +149,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   textStyle: TextStyle(fontSize: 17, color: Colors.black45),
                 ),
 
-                onDragging: (lowerValue, upperValue) {
+                onDragging: (handlerIndex, lowerValue, upperValue) {
                   _lowerValue = lowerValue;
                   _upperValue = upperValue;
                   setState(() {});
@@ -186,9 +169,9 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               max: 2000000000,
               min: 0,
-              divisions: 20,
+              step: 20,
               jump: true,
-              onDragging: (lowerValue, upperValue) {
+              onDragging: (handlerIndex, lowerValue, upperValue) {
                 _lowerValue = lowerValue;
                 _upperValue = upperValue;
                 setState(() {});
@@ -204,7 +187,7 @@ class _MyHomePageState extends State<MyHomePage> {
               max: 100,
               min: 0,
               displayTestTouchZone: true,
-              onDragging: (lowerValue, upperValue) {
+              onDragging: (handlerIndex, lowerValue, upperValue) {
                 _lowerValue = lowerValue;
                 _upperValue = upperValue;
                 setState(() {});
@@ -223,10 +206,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
 
-  Widget customHandler(IconData icon){
-    return SizedBox(
-      width: 35,
-      height: 35,
+  customHandler(IconData icon){
+    return FlutterSliderHandler(
       child: Container(
         child: Container(
           margin: EdgeInsets.all(5),

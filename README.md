@@ -1,8 +1,8 @@
-# flutter_slider
+# flutter_xlider
 
 A material design slider and range slider with rtl support and lots of options and customizations for flutter
 
-### Version 1.0.0 and above will break functionality of older (beta) versions.
+### Version 2.0.0 and above will break functionality of older versions.
 
 ## Get Started
 
@@ -15,7 +15,7 @@ FlutterSlider(
   values: [300],
   max: 500,
   min: 0,
-  onDragging: (lowerValue, upperValue) {
+  onDragging: (handlerIndex, lowerValue, upperValue) {
     _lowerValue = lowerValue;
     _upperValue = upperValue;
     setState(() {});
@@ -40,7 +40,7 @@ to make slider `Right To Left` use `rtl: true`
 
 ### Range Slider
 
-A simple example of slider
+A simple example of range slider
 
 ```dart
 FlutterSlider(
@@ -48,7 +48,7 @@ FlutterSlider(
   rangeSlider: true,
   max: 500,
   min: 0,
-  onDragging: (lowerValue, upperValue) {
+  onDragging: (handlerIndex, lowerValue, upperValue) {
     _lowerValue = lowerValue;
     _upperValue = upperValue;
     setState(() {});
@@ -61,47 +61,31 @@ FlutterSlider(
 ## Handlers
 
 You can customize handlers using `handler` and `rightHandler` properties.  
-`width` and `height` are required for custom handlers, so we use `SizedBox` as a wrapper
+Both `handler` and `rightHandler` accept `FlutterSliderHandler` class which has `icon` and `child` properties  
+`icon` is used to only change and customize the icon of handlers.
+if you define a `widget` in child property, `icon` property will be ignored
 
-**if you use `rangeSlider` then you should define `rightHandler` as well if you want to customize handlers**
-
-
-here there is a range slider with customized handlers and trackbars
 ```dart
 FlutterSlider(
   ...
-  handler: SizedBox(
-    width: 20,
-    height: 50,
-    child: Container(
-      child: Icon(
-        Icons.view_headline,
-        color: Colors.black54,
-        size: 13,
-      ),
-      decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: Colors.black.withOpacity(0.12))),
+  handler: FlutterSliderHandler(
+    child: Material(
+      type: MaterialType.canvas,
+      color: Colors.orange,
+      elevation: 3,
+      child: Container(
+          padding: EdgeInsets.all(5),
+          child: Icon(Icons.adjust, size: 25,)),
     ),
   ),
-  rightHandler: SizedBox(
-    width: 20,
-    height: 50,
-    child: Container(
-      child: Icon(
-        Icons.view_headline,
-        color: Colors.black54,
-        size: 13,
-      ),
-      decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: Colors.black.withOpacity(0.12))),
-    ),
+  rightHandler: FlutterSliderHandler(
+    icon: Icon(Icons.chevron_left, color: Colors.red, size: 24,),
   ),
   ...
 )
 
 ```
+
 
 ### Handler Scale Animation
 
@@ -144,6 +128,8 @@ FlutterSlider(
 )
 ```
 
+
+
 ## Tooltips
 
 in order to customize your tooltips, you can use `FlutterSliderTooltip` class. [You can see all properties here](https://pub.dartlang.org/documentation/flutter_xlider/latest/flutter_xlider/FlutterSliderTooltip/FlutterSliderTooltip.html)
@@ -162,6 +148,8 @@ FlutterSlider(
   ...
 )
 ```
+
+Here there is a range slider with customized handlers, trackbars and tooltips
 
 ![](images/range-customized.gif)
 
@@ -217,7 +205,33 @@ FlutterSlider(
 ```
 
 
+### Always Show Tooltips
+
+tooltips always displayed if this property is set to `true`.
+
+```dart
+FlutterSlider(
+  ...
+  alwaysShowTooltip: true,
+  ...
+)
+```
+
+
 ## Controls
+
+### Handlers width and height
+
+By default both handlers size are 35 width and height, but you can change this by `handlerWidth` and `handlerHeight`
+
+```dart
+FlutterSlider(
+  ...
+  handlerWidth: 30,
+  handlerHeight: 30,
+  ...
+)
+```
 
 ### Jump
 
@@ -231,14 +245,14 @@ FlutterSlider(
 )
 ```
 
-### divisions
+### step
 
-The number of discrete divisions
+The amount the slider changes on movement can be set using `step` option
 
 ```dart
 FlutterSlider(
   ...
-  divisions: 25,
+  step: 100,
   ...
 )
 ```
@@ -292,17 +306,6 @@ FlutterSlider(
 
 
 
-### Always Show Tooltips
-
-tooltips always displayed if this property is set to `true`. like above example
-
-```dart
-FlutterSlider(
-  ...
-  alwaysShowTooltip: true,
-  ...
-)
-```
 
 ### Touch Zone
 
@@ -361,15 +364,23 @@ There are 3 events
 `onDragCompleted` fires when drag ends  
 `onDragging` keeps firing when dragging  
 
+All three of above functions returns three values. 
+```dart
+(int handlerIndex, double lowerValue, double upperValue)
+```
 
-all three of above functions returns two `double` values. `Lower Value` and `Upper Value`
+First value is `handlerIndex`, which determines the handler. 0 is `Left Handler` and 1 refers to `Right Handler`
 
 ```dart
 FlutterSlider(
   ...
-  onDragging: (lowerValue, upperValue) {
+  onDragging: (handlerIndex, lowerValue, upperValue) {
     _lowerValue = lowerValue;
     _upperValue = upperValue;
+    
+    if(handlerIndex == 0)
+        print(" Left handler ");
+    
     setState(() {});
   },
   ...

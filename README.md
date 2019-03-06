@@ -62,8 +62,9 @@ FlutterSlider(
 
 You can customize handlers using `handler` and `rightHandler` properties.  
 Both `handler` and `rightHandler` accept `FlutterSliderHandler` class which has `icon` and `child` properties  
-`icon` is used to only change and customize the icon of handlers.
-if you define a `widget` in child property, `icon` property will be ignored
+
+1. `icon` is used to only change and customize the icon of handlers.
+2. `child` is a widget, if you pass a widget to it, the `icon` property will be ignored
 
 ```dart
 FlutterSlider(

@@ -131,6 +131,8 @@ class _FlutterSliderState extends State<FlutterSlider>
 
   int _decimalScale = 0;
 
+  double dragtmp = 0;
+
   @override
   void initState() {
     // validate inputs
@@ -392,7 +394,6 @@ class _FlutterSliderState extends State<FlutterSlider>
       top: 0,
       bottom: 0,
       child: Listener(
-        key: Key('234'),
         child: Draggable(
             axis: Axis.horizontal,
             child: Stack(
@@ -413,7 +414,7 @@ class _FlutterSliderState extends State<FlutterSlider>
           bool validMove = true;
 
           double dx = _.position.dx - _containerLeft;
-          double xPosTmp = dx - _handlersPadding;
+          double xPosTmp = dx - dragtmp + (widget.touchZone * 20 / 2);
 
           double rx =
               ((xPosTmp / (_containerWidthWithoutPadding / _divisions)) *
@@ -453,7 +454,8 @@ class _FlutterSliderState extends State<FlutterSlider>
           if (validMove &&
                   xPosTmp - (widget.touchZone * 20 / 2) <=
                       rightHandlerXPosition + 1 &&
-                  dx >= _handlersPadding - 1 /* - _leftPadding*/
+                  xPosTmp + _handlersPadding >=
+                      _handlersPadding - 1 /* - _leftPadding*/
               ) {
             _lowerValue = (double.parse(rx.toStringAsFixed(_decimalScale)) -
                 double.parse(
@@ -470,7 +472,7 @@ class _FlutterSliderState extends State<FlutterSlider>
                           _lowerValue) -
                       (widget.touchZone * 20 / 2);
             } else {
-              leftHandlerXPosition = xPosTmp - (widget.touchZone * 20 / 2);
+              leftHandlerXPosition = dx - dragtmp;
             }
           }
 
@@ -484,6 +486,8 @@ class _FlutterSliderState extends State<FlutterSlider>
           _callbacks('onDragging', 0);
         },
         onPointerDown: (_) {
+          dragtmp = (_.position.dx - _containerLeft - leftHandlerXPosition);
+
           _renderBoxInitialization();
 
           if (!_tooltipData.disabled &&
@@ -548,7 +552,7 @@ class _FlutterSliderState extends State<FlutterSlider>
           bool validMove = true;
 
           double dx = _.position.dx - _containerLeft;
-          double xPosTmp = dx - _handlersPadding;
+          double xPosTmp = dx - dragtmp + (widget.touchZone * 20 / 2);
 
           double rx =
               ((xPosTmp / (_containerWidthWithoutPadding / _divisions)) *
@@ -588,7 +592,8 @@ class _FlutterSliderState extends State<FlutterSlider>
           if (validMove &&
               xPosTmp >=
                   leftHandlerXPosition - 1 + (widget.touchZone * 20 / 2) &&
-              dx <= _constraintMaxWidth - _handlersPadding + 1) {
+              xPosTmp + _handlersPadding <=
+                  _constraintMaxWidth - _handlersPadding + 1) {
             _upperValue = (double.parse(rx.toStringAsFixed(_decimalScale)) -
                 double.parse(
                     (rx % widget.step).toStringAsFixed(_decimalScale)));
@@ -604,7 +609,8 @@ class _FlutterSliderState extends State<FlutterSlider>
                           _upperValue) -
                       (widget.touchZone * 20 / 2);
             } else {
-              rightHandlerXPosition = xPosTmp - (widget.touchZone * 20 / 2);
+              rightHandlerXPosition =
+                  dx - dragtmp; // - (widget.touchZone * 20 / 2);
             }
           }
 
@@ -618,6 +624,8 @@ class _FlutterSliderState extends State<FlutterSlider>
           _callbacks('onDragging', 1);
         },
         onPointerDown: (_) {
+          dragtmp = (_.position.dx - _containerLeft - rightHandlerXPosition);
+
           _renderBoxInitialization();
 
           if (!_tooltipData.disabled &&

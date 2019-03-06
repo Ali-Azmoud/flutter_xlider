@@ -28,8 +28,12 @@
 
 * tab view and any other scrollable widget bug fixed
 
-## [2.0.0] - 02/26/2019
+## [2.0.0] - 03/05/2019
 
 * handlers can have double values
 * `divisions` changed with `step`. step can be double
 * handlers can be modified.
+
+## [2.0.1] - 03/05/2019
+
+* handlers drag improved

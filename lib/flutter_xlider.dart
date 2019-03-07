@@ -486,9 +486,8 @@ class _FlutterSliderState extends State<FlutterSlider>
           _callbacks('onDragging', 0);
         },
         onPointerDown: (_) {
-          dragtmp = (_.position.dx - _containerLeft - leftHandlerXPosition);
-
           _renderBoxInitialization();
+          dragtmp = (_.position.dx - _containerLeft - leftHandlerXPosition);
 
           if (!_tooltipData.disabled &&
               _tooltipData.alwaysShowTooltip == false) {
@@ -624,9 +623,8 @@ class _FlutterSliderState extends State<FlutterSlider>
           _callbacks('onDragging', 1);
         },
         onPointerDown: (_) {
-          dragtmp = (_.position.dx - _containerLeft - rightHandlerXPosition);
-
           _renderBoxInitialization();
+          dragtmp = (_.position.dx - _containerLeft - rightHandlerXPosition);
 
           if (!_tooltipData.disabled &&
               _tooltipData.alwaysShowTooltip == false) {

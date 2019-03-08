@@ -1,8 +1,6 @@
 # flutter_xlider
 
-A material design slider and range slider with rtl support and lots of options and customizations for flutter
-
-### Version 2.0.0 and above will break functionality of older versions.
+(Flutter Xlider) A material design slider and range slider, horizontal and vertical, with rtl support and lots of options and customizations for flutter
 
 ## Get Started
 
@@ -57,6 +55,26 @@ FlutterSlider(
 ```
 
 ![](images/range-1.gif)
+
+### Vertical Axis
+
+You can change the axis of your slider by setting `axis` to `Axis.vertical`
+```dart
+FlutterSlider(
+  values: [300],
+  max: 500,
+  min: 0,
+  axis: Axis.vertical,
+  onDragging: (handlerIndex, lowerValue, upperValue) {
+    _lowerValue = lowerValue;
+    _upperValue = upperValue;
+    setState(() {});
+  },
+)
+```
+
+![](images/vertical-simple.gif) ![](images/vertical-range.gif)
+
 
 ## Handlers
 

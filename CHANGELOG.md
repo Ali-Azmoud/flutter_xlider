@@ -34,6 +34,11 @@
 * `divisions` changed with `step`. step can be double
 * handlers can be modified.
 
-## [2.0.1] - 03/05/2019
+## [2.0.1] - 03/07/2019
 
 * handlers drag improved
+
+## [2.1.0] - 03/08/2019
+
+* bug fix
+* vertical axis support

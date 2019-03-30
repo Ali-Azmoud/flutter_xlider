@@ -58,18 +58,12 @@ FlutterSlider(
 
 ### Vertical Axis
 
-You can change the axis of your slider by setting `axis` to `Axis.vertical`
+You can change the axis of your slider by setting `axis` to `Axis.vertical`. Default is horizontal
 ```dart
 FlutterSlider(
-  values: [300],
-  max: 500,
-  min: 0,
+  ...
   axis: Axis.vertical,
-  onDragging: (handlerIndex, lowerValue, upperValue) {
-    _lowerValue = lowerValue;
-    _upperValue = upperValue;
-    setState(() {});
-  },
+  ...
 )
 ```
 
@@ -253,6 +247,23 @@ FlutterSlider(
 )
 ```
 
+
+### Select By Tap
+
+You can tap on the slider to select it's value.  
+if slider is range-slider, then the closest handler to the selected point will move to that point
+
+```dart
+FlutterSlider(
+  ...
+  selectByTap: true, // default is true
+  ...
+)
+```
+
+![](images/select-by-tap.gif)
+
+
 ### Jump
 
 by default slider handlers move fluently, if you set `jump` to true, handlers will jump between intervals
@@ -265,7 +276,7 @@ FlutterSlider(
 )
 ```
 
-### step
+### Step
 
 The amount the slider changes on movement can be set using `step` option
 
@@ -352,7 +363,7 @@ FlutterSlider(
 
 ![](images/range-touchable-area.gif)
 
-### disabled
+### Disabled
 
 to disable your slider, you can use `disabled`. 
 
@@ -364,7 +375,7 @@ FlutterSlider(
 )
 ```
 
-### rtl
+### RTL
 
 makes the slider `Right To Left`
 

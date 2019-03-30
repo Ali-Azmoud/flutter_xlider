@@ -42,3 +42,12 @@
 
 * bug fix
 * vertical axis support
+
+## [2.1.1] - 03/17/2019
+
+* trackbar positions bug fixed
+
+## [2.2.0] - 03/30/2019
+
+* `selectByTap` feature added
+* some options ( values, max, min, step, ... ) can be updated by setState

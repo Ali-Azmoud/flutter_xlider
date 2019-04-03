@@ -2,6 +2,8 @@
 
 (Flutter Xlider) A material design slider and range slider, horizontal and vertical, with rtl support and lots of options and customizations for flutter
 
+**Version 2.3.0 and above, will break functionality of older versions**
+
 ## Get Started
 
 ### Single Slider
@@ -73,10 +75,11 @@ FlutterSlider(
 ## Handlers
 
 You can customize handlers using `handler` and `rightHandler` properties.  
-Both `handler` and `rightHandler` accept `FlutterSliderHandler` class which has `icon` and `child` properties  
+Both `handler` and `rightHandler` accept `FlutterSliderHandler` class which has `icon`, `child` and `disabled` properties  
 
 1. `icon` is used to only change and customize the icon of handlers.
 2. `child` is a widget, if you pass a widget to it, the `icon` property will be ignored
+3. `disabled` to disable the handler
 
 ```dart
 FlutterSlider(
@@ -139,8 +142,6 @@ FlutterSlider(
   ...
 )
 ```
-
-
 
 ## Tooltips
 
@@ -247,6 +248,8 @@ FlutterSlider(
 )
 ```
 
+**whether you make new widget in `handler` or `rightHandler` and set their width and height explicitly,
+but `handlerWidth` and `handlerHeight` are the main size for measuring handlers movement**
 
 ### Select By Tap
 
@@ -338,20 +341,27 @@ FlutterSlider(
 
 
 
-### Touch Zone
+### ~~Touch Zone~~
 
-You can control how big a handler's touch area could be. by default touch zone is 2  
-the range is between 1 to 5
+~~You can control how big a handler's touch area could be. by default touch zone is 2  
+the range is between 1 to 5~~
+
+
+### Touch Size
+
+You can control how big a handler's touch area could be. by default touch size is 25
+The range is between 10 to 100
 
 ```dart
 FlutterSlider(
   ...
-  touchZone: 2,
+  touchSize: 25,
   ...
 )
 ```
 
-to see the touchable area for handlers you set `displayTestTouchZone` to true and test your slider
+To see the touchable area for handlers you set `displayTestTouchZone` to true and test your slider
+
 
 ```dart
 FlutterSlider(

@@ -87,7 +87,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 trackBar: FlutterSliderTrackBar(
                   activeTrackBarColor: Colors.redAccent,
                   activeTrackBarHeight: 5,
-                  leftInactiveTrackBarColor: Colors.greenAccent.withOpacity(0.5),
                 ),
                 tooltip: FlutterSliderTooltip(
                   textStyle: TextStyle(fontSize: 17, color: Colors.lightBlue),

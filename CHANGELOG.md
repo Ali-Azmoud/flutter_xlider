@@ -51,3 +51,11 @@
 
 * `selectByTap` feature added
 * some options ( values, max, min, step, ... ) can be updated by setState
+
+## [2.3.0] - 03/30/2019
+
+* removed TouchZone
+* `leftInactiveTrackBar` and `rightInactiveTrackBar` changed to `inactiveTrackBar`
+* each handler can now be disabled
+* trackbar disabled color feature added
+* More accurate handlers movement 

@@ -248,7 +248,7 @@ FlutterSlider(
 )
 ```
 
-**whether you make new widget in `handler` or `rightHandler` and set their width and height explicitly,
+**Whether you make new widget by `handler` or `rightHandler` and set their width and height explicitly,
 but `handlerWidth` and `handlerHeight` are the main size for measuring handlers movement**
 
 ### Select By Tap

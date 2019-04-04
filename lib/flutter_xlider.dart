@@ -1,3 +1,14 @@
+/*
+* *
+* * A material design slider and range slider with rtl support and lots of options and customizations for flutter
+* * Written by Ali Azmoude <ali.azmoude@gmail.com>
+* *
+* *
+* *
+* * When I wrote this, only God and I understood what I was doing.
+* * Now, God only knows "Karl Weierstrass"
+* */
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 import 'dart:core';
@@ -28,7 +39,7 @@ class FlutterSlider extends StatefulWidget {
   final List<FlutterSliderIgnoreSteps> ignoreSteps;
   final bool disabled;
   final double touchSize;
-  final bool displayTestTouchZone;
+  final bool visibleTouchArea;
   final double minimumDistance;
   final double maximumDistance;
   final FlutterSliderHandlerAnimation handlerAnimation;
@@ -55,7 +66,7 @@ class FlutterSlider extends StatefulWidget {
       this.ignoreSteps = const [],
       this.disabled = false,
       this.touchSize,
-      this.displayTestTouchZone = false,
+      this.visibleTouchArea = false,
       this.minimumDistance = 0,
       this.maximumDistance = 0,
       this.tooltip,
@@ -63,7 +74,8 @@ class FlutterSlider extends StatefulWidget {
       this.handlerAnimation = const FlutterSliderHandlerAnimation(),
       this.selectByTap = true,
       this.step = 1})
-      : assert(touchSize == null || (touchSize != null && (touchSize >= 10 && touchSize <= 100))),
+      : assert(touchSize == null ||
+            (touchSize != null && (touchSize >= 10 && touchSize <= 100))),
         assert(values != null),
         assert(min != null && max != null && min <= max),
         assert(handlerAnimation != null),
@@ -471,7 +483,7 @@ class _FlutterSliderState extends State<FlutterSlider>
     rightHandler = _MakeHandler(
       animation: _rightHandlerScaleAnimation,
       id: rightHandlerKey,
-      displayTestTouchZone: widget.displayTestTouchZone,
+      visibleTouchArea: widget.visibleTouchArea,
       handlerData: tmpInputRightHandler ??
           FlutterSliderHandler(
               icon: Icon(
@@ -502,7 +514,7 @@ class _FlutterSliderState extends State<FlutterSlider>
     leftHandler = _MakeHandler(
         animation: _leftHandlerScaleAnimation,
         id: leftHandlerKey,
-        displayTestTouchZone: widget.displayTestTouchZone,
+        visibleTouchArea: widget.visibleTouchArea,
         handlerData: tmpInputHandler ??
             FlutterSliderHandler(icon: Icon(hIcon, color: Colors.black45)),
         width: _handlersWidth,
@@ -1136,7 +1148,7 @@ class _FlutterSliderState extends State<FlutterSlider>
       height = widget.trackBar.inactiveTrackBarHeight;
     } else {
       right = 0;
-      height = _containerHeight;
+      height = _containerHeightWithoutPadding;
       top = _handlersPadding;
       width = widget.trackBar.inactiveTrackBarHeight;
     }
@@ -1277,14 +1289,14 @@ class _MakeHandler extends StatelessWidget {
   final double height;
   final GlobalKey id;
   final FlutterSliderHandler handlerData;
-  final bool displayTestTouchZone;
+  final bool visibleTouchArea;
   final Animation animation;
   final Axis axis;
 
   _MakeHandler(
       {this.id,
       this.handlerData,
-      this.displayTestTouchZone,
+      this.visibleTouchArea,
       this.width,
       this.height,
       this.animation,
@@ -1292,7 +1304,7 @@ class _MakeHandler extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double touchOpacity = (displayTestTouchZone == true) ? 1 : 0;
+    double touchOpacity = (visibleTouchArea == true) ? 1 : 0;
 
     double localWidth, localHeight;
     if (axis == Axis.vertical) localHeight = height + (_touchSize * 2);
@@ -1416,9 +1428,12 @@ class FlutterSliderTrackBar {
     this.inactiveDisabledTrackBarColor = const Color(0xffe5e5e5),
     this.activeTrackBarHeight = 3.5,
     this.inactiveTrackBarHeight = 3,
-  })  : assert(inactiveTrackBarColor != null && activeTrackBarColor != null),
-        assert(inactiveTrackBarHeight != null && inactiveTrackBarHeight > 0),
-        assert(activeTrackBarHeight != null && activeTrackBarHeight > 0),
+  })  : assert(activeTrackBarHeight != null &&
+            activeTrackBarHeight > 0 &&
+            inactiveTrackBarHeight != null &&
+            inactiveTrackBarHeight > 0 &&
+            activeTrackBarHeight >= inactiveTrackBarHeight),
+        assert(inactiveTrackBarColor != null && activeTrackBarColor != null),
         assert(activeDisabledTrackBarColor != null &&
             inactiveDisabledTrackBarColor != null);
 }

@@ -52,7 +52,7 @@
 * `selectByTap` feature added
 * some options ( values, max, min, step, ... ) can be updated by setState
 
-## [2.3.0] - 03/30/2019
+## [2.3.1] - 03/30/2019
 
 * removed TouchZone
 * `leftInactiveTrackBar` and `rightInactiveTrackBar` changed to `inactiveTrackBar`

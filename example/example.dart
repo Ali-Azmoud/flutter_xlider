@@ -185,7 +185,7 @@ class _MyHomePageState extends State<MyHomePage> {
               rangeSlider: true,
               max: 100,
               min: 0,
-              displayTestTouchZone: true,
+              visibleTouchArea: true,
               onDragging: (handlerIndex, lowerValue, upperValue) {
                 _lowerValue = lowerValue;
                 _upperValue = upperValue;

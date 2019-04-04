@@ -2,7 +2,7 @@
 
 (Flutter Xlider) A material design slider and range slider, horizontal and vertical, with rtl support and lots of options and customizations for flutter
 
-**Version 2.3.0 and above, will break functionality of older versions**
+**Version 2.3.1 and above, will break functionality of older versions**
 
 ## Get Started
 
@@ -137,7 +137,7 @@ FlutterSlider(
     trackBar: FlutterSliderTrackBar(
       activeTrackBarColor: Colors.redAccent,
       activeTrackBarHeight: 5,
-      leftInactiveTrackBarColor: Colors.greenAccent.withOpacity(0.5),
+      inactiveTrackBarColor: Colors.greenAccent.withOpacity(0.5),
     ),
   ...
 )
@@ -360,13 +360,13 @@ FlutterSlider(
 )
 ```
 
-To see the touchable area for handlers you set `displayTestTouchZone` to true and test your slider
+To see the touchable area for handlers you set `visibleTouchArea` to true and test your slider
 
 
 ```dart
 FlutterSlider(
   ...
-  displayTestTouchZone: true,
+  visibleTouchArea: true,
   ...
 )
 ```

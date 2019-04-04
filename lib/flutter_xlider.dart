@@ -209,15 +209,6 @@ class _FlutterSliderState extends State<FlutterSlider>
 
     _arrangeHandlersZIndex();
 
-//    _plusSpinnerStyle = widget.plusButton ?? SpinnerButtonStyle();
-//    _plusSpinnerStyle.child ??= Icon(Icons.add, size: 16);
-
-//    if (widget.divisions != null) {
-//      _divisions = widget.divisions;
-//    } else {
-//      _divisions = (_fakeMax / 1000) < 1000 ? _fakeMax : (_fakeMax / 1000);
-//    }
-
     _originalToolTipData = _tooltipData.toString();
 
     _generateHandler();
@@ -307,11 +298,6 @@ class _FlutterSliderState extends State<FlutterSlider>
     _finalRightHandlerWidth = _handlersWidth;
     _finalLeftHandlerHeight = _handlersHeight;
     _finalRightHandlerHeight = _handlersHeight;
-
-//    if(widget.axis == Axis.vertical) {
-//      animationStart = Offset(0.20, 0);
-//      animationFinish = Offset(-0.52, 0);
-//    }
 
     _leftHandlerScaleAnimationController = AnimationController(
         duration: widget.handlerAnimation.duration, vsync: this);
@@ -410,9 +396,6 @@ class _FlutterSliderState extends State<FlutterSlider>
         _originalRightHandler != widget.rightHandler.toString() ||
         _originalToolTipData != widget.tooltip.toString()) {
       bool reArrangePositions = false;
-
-//        if(_originalMin != widget.min || _originalMax != widget.max)
-//          reArrangePositions = true;
 
       _setParameters();
 
@@ -982,8 +965,6 @@ class _FlutterSliderState extends State<FlutterSlider>
 
   drawHandlers() {
     List<Positioned> items = [
-//      Function.apply(_leftInactiveTrack, []),
-//      Function.apply(_rightInactiveTrack, []),
       Function.apply(_inactiveTrack, []),
       Function.apply(_activeTrack, []),
       Positioned(
@@ -1043,7 +1024,6 @@ class _FlutterSliderState extends State<FlutterSlider>
                 }
               },
               child: Container(
-                color: Colors.redAccent,
               ),
             ),
           )),
@@ -1100,17 +1080,6 @@ class _FlutterSliderState extends State<FlutterSlider>
             )),
       ),
     ));
-
-//    double top, left, right, bottom;
-//    top = left = right = bottom = -50;
-//    if(widget.axis == Axis.horizontal) {
-//      top = -(_containerHeight - _handlersHeight);
-//      bottom = null;
-//    } else {
-//      top = bottom = 20;
-//      right = null;
-//      left = -(_containerWidth - _handlersWidth);
-//    }
 
     double top = -(_containerHeight - _handlersHeight);
     if (widget.axis == Axis.vertical) top = -_handlersHeight + 10;
@@ -1247,10 +1216,6 @@ class _FlutterSliderState extends State<FlutterSlider>
 
   double _displayRealValue(double value) {
     return double.parse((value + widget.min).toStringAsFixed(_decimalScale));
-    // return (value + widget.min);
-//    if(_decimalScale > 0) {
-//    }
-//    return double.parse((value + widget.min).floor().toStringAsFixed(_decimalScale));
   }
 
   void _arrangeHandlersZIndex() {

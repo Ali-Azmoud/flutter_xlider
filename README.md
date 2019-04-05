@@ -2,7 +2,7 @@
 
 (Flutter Xlider) A material design slider and range slider, horizontal and vertical, with rtl support and lots of options and customizations for flutter
 
-**Version 2.3.1 and above, will break functionality of older versions**
+**Version 2.4.1 and above, will break functionality of older versions**
 
 ## Get Started
 

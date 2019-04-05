@@ -827,7 +827,7 @@ class _FlutterSliderState extends State<FlutterSlider>
 
     if (validMove &&
         __axisPosTmp - tS >= __leftHandlerPosition - 1 &&
-        __middle + rM <= __containerSizeWithoutHalfPadding) {
+        __axisPosTmp + rM <= __containerSizeWithoutHalfPadding) {
       double tmpUpperValue = __rAxis;
 
       if (tmpUpperValue > _fakeMax) tmpUpperValue = _fakeMax;

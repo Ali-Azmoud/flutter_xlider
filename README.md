@@ -346,9 +346,10 @@ use `FlutterSliderHatchMark` class which has following properties:
 1. `distanceFromTrackBar`: The distance between slider and hatch mark
 2. `density`: The amount of lines per percent. 1 is default. any number less or more than 1 will decrease and increase lines respectively
 3. `labels`: If you want to display some label or text at certain percent in your hatch mark, you can use `labels`
-4. `smallLine`: The widget of small lines in hatch mark
-5. `bigLine`: The widget of big lines in hatch mark
-6. `labelBox`: The widget of label box
+4. `labelTextStyle`: The style of the label text
+5. `smallLine`: The widget of small lines in hatch mark
+6. `bigLine`: The widget of big lines in hatch mark
+7. `labelBox`: The widget of label box
 
 Here is an example:
 
@@ -357,7 +358,7 @@ FlutterSlider(
   ...
     hatchMark: FlutterSliderHatchMark(
        distanceFromTrackBar: 10,
-       density: 0.5,
+       density: 0.5, // means 50 lines, from 0 to 100 percent
        labels: [
          FlutterSliderHatchMarkLabel(percent: 0, label: 'Start'),
          FlutterSliderHatchMarkLabel(percent: 10, label: '10,000'),
@@ -372,6 +373,9 @@ FlutterSlider(
 
 ![](images/hatch-mark.gif)
 
+  
+    
+    
 **You MUST define with or height for the parent container of your slider to display `hatchMark` properly.**
 
 

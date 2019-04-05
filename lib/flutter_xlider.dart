@@ -548,7 +548,7 @@ class _FlutterSliderState extends State<FlutterSlider>
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      _constraintMaxWidth = constraints.maxWidth;
+      _constraintMaxWidth = constraints.maxWidth - _handlersWidth;
       _constraintMaxHeight = constraints.maxHeight;
 
       _containerWidthWithoutPadding = _constraintMaxWidth - _handlersWidth;
@@ -564,6 +564,7 @@ class _FlutterSliderState extends State<FlutterSlider>
       }
 
       return Container(
+        padding: EdgeInsets.only(left: _handlersPadding, top: _handlersPadding),
         key: containerKey,
         height: _containerHeight,
         width: _containerWidth,
@@ -840,17 +841,16 @@ class _FlutterSliderState extends State<FlutterSlider>
       }
     }
 
-    /*
-    * if (validMove &&
-        __axisPosTmp - (_touchSize) <= __rightHandlerPosition + 1 &&
-        __axisPosTmp + _handlersPadding >=
-            _handlersPadding - 1 /* - _leftPadding*/
-    )
-    * */
+    double tS = _touchSize;
+    double rM = _handlersPadding;
+    if (widget.jump) {
+      rM = -_handlersWidth;
+      tS = -_touchSize;
+    }
 
     if (validMove &&
-        __axisPosTmp + (_touchSize) >= __leftHandlerPosition - 1 &&
-        __axisPosTmp - _handlersWidth <= __containerSizeWithoutHalfPadding) {
+        __axisPosTmp - tS >= __leftHandlerPosition - 1 &&
+        __axisPosTmp + rM <= __containerSizeWithoutHalfPadding) {
       double tmpUpperValue = __rAxis;
 
       if (tmpUpperValue > _fakeMax) tmpUpperValue = _fakeMax;

@@ -13,8 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 import 'dart:core';
 
-double _touchSize;
-
 /// A material design slider and range slider with rtl support and lots of options and customizations for flutter
 class FlutterSlider extends StatefulWidget {
   final Key key;
@@ -56,8 +54,8 @@ class FlutterSlider extends StatefulWidget {
       this.axis = Axis.horizontal,
       this.handler,
       this.rightHandler,
-      this.handlerHeight = 35,
-      this.handlerWidth = 35,
+      this.handlerHeight,
+      this.handlerWidth,
       this.onDragStarted,
       this.onDragCompleted,
       this.onDragging,
@@ -77,7 +75,7 @@ class FlutterSlider extends StatefulWidget {
       this.step = 1,
       this.hatchMark})
       : assert(touchSize == null ||
-            (touchSize != null && (touchSize >= 10 && touchSize <= 100))),
+            (touchSize != null && (touchSize >= 5 && touchSize <= 50))),
         assert(values != null),
         assert(min != null && max != null && min <= max),
         assert(handlerAnimation != null),
@@ -89,6 +87,8 @@ class FlutterSlider extends StatefulWidget {
 
 class _FlutterSliderState extends State<FlutterSlider>
     with TickerProviderStateMixin {
+  double _touchSize;
+
   Widget leftHandler;
   Widget rightHandler;
 
@@ -112,8 +112,8 @@ class _FlutterSliderState extends State<FlutterSlider>
   GlobalKey rightHandlerKey = GlobalKey();
   GlobalKey containerKey = GlobalKey();
 
-  double _handlersWidth = 30;
-  double _handlersHeight = 30;
+  double _handlersWidth;
+  double _handlersHeight;
 
   double _constraintMaxWidth;
   double _constraintMaxHeight;
@@ -127,11 +127,6 @@ class _FlutterSliderState extends State<FlutterSlider>
   FlutterSliderTooltip _tooltipData;
 
   List<Function> _positionedItems;
-
-  double _finalLeftHandlerWidth;
-  double _finalRightHandlerWidth;
-  double _finalLeftHandlerHeight;
-  double _finalRightHandlerHeight;
 
   double _rightTooltipOpacity = 0;
   double _leftTooltipOpacity = 0;
@@ -180,6 +175,9 @@ class _FlutterSliderState extends State<FlutterSlider>
       __handlerSize;
 
   void _setParameters() {
+    _handlersWidth = widget.handlerWidth ?? widget.handlerHeight ?? 35;
+    _handlersHeight = widget.handlerHeight ?? widget.handlerWidth ?? 35;
+
     _originalLeftHandler = widget.handler.toString();
     _originalRightHandler = widget.rightHandler.toString();
 
@@ -304,14 +302,6 @@ class _FlutterSliderState extends State<FlutterSlider>
     // so calculations works well, but when we want to display
     // result numbers to user, we add ( widget.min ) to the final numbers
 
-    _handlersWidth = widget.handlerWidth;
-    _handlersHeight = widget.handlerHeight;
-
-    _finalLeftHandlerWidth = _handlersWidth;
-    _finalRightHandlerWidth = _handlersWidth;
-    _finalLeftHandlerHeight = _handlersHeight;
-    _finalRightHandlerHeight = _handlersHeight;
-
 //    if(widget.axis == Axis.vertical) {
 //      animationStart = Offset(0.20, 0);
 //      animationFinish = Offset(-0.52, 0);
@@ -382,19 +372,6 @@ class _FlutterSliderState extends State<FlutterSlider>
   _initialize(_) {
     _renderBoxInitialization();
 
-    _handlersWidth = _finalLeftHandlerWidth;
-    _handlersHeight = _finalLeftHandlerHeight;
-
-    if (widget.rangeSlider == true &&
-        _finalLeftHandlerWidth != _finalRightHandlerWidth) {
-      throw 'ERROR: Width of both handlers should be equal';
-    }
-
-    if (widget.rangeSlider == true &&
-        _finalLeftHandlerHeight != _finalRightHandlerHeight) {
-      throw 'ERROR: Height of both handlers should be equal';
-    }
-
     _arrangeHandlersPosition();
 
     _drawHatchMark();
@@ -416,6 +393,7 @@ class _FlutterSliderState extends State<FlutterSlider>
         height: 9, width: 2, decoration: BoxDecoration(color: Colors.black45));
     hatchMark.labelBox ??= FlutterSliderSizedBox(height: 35, width: 50);
 
+    hatchMark.distanceFromTrackBar += _handlersWidth / 2.5;
     double percent = 100 * hatchMark.density;
     double top, left, barWidth, barHeight, distance;
 
@@ -465,7 +443,7 @@ class _FlutterSliderState extends State<FlutterSlider>
                   label,
                   style: hatchMark.labelTextStyle,
                   maxLines: 5,
-                  overflow: TextOverflow.visible,
+//                  overflow: TextOverflow.visible,
                   textAlign: TextAlign.center,
                 )),
               )
@@ -507,7 +485,8 @@ class _FlutterSliderState extends State<FlutterSlider>
         top = (p * distance) + _handlersPadding - labelBoxHalfSize;
       }
 
-      _points.add(Positioned(top: top, left: left, child: bar));
+      _points.add(Positioned(
+          top: top, bottom: null, left: left, child: Center(child: bar)));
     }
   }
 
@@ -549,7 +528,7 @@ class _FlutterSliderState extends State<FlutterSlider>
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       _constraintMaxWidth = constraints.maxWidth - _handlersWidth;
-      _constraintMaxHeight = constraints.maxHeight;
+      _constraintMaxHeight = constraints.maxHeight - _handlersHeight;
 
       _containerWidthWithoutPadding = _constraintMaxWidth - _handlersWidth;
 
@@ -591,51 +570,44 @@ class _FlutterSliderState extends State<FlutterSlider>
 
   void _generateHandler() {
     /*Right Handler Data*/
-    FlutterSliderHandler tmpInputRightHandler;
-    if (widget.rightHandler != null &&
-        (widget.rightHandler.icon != null || widget.rightHandler.child != null))
-      tmpInputRightHandler = widget.rightHandler;
+    FlutterSliderHandler inputRightHandler =
+        widget.rightHandler ?? FlutterSliderHandler();
+    inputRightHandler.child ??= Icon(
+        (widget.axis == Axis.horizontal)
+            ? Icons.chevron_left
+            : Icons.expand_less,
+        color: Colors.black45);
+    inputRightHandler.disabled ??= false;
+    inputRightHandler.decoration ??= BoxDecoration(boxShadow: [
+      BoxShadow(
+          color: Colors.black26,
+          blurRadius: 2,
+          spreadRadius: 0.2,
+          offset: Offset(0, 1))
+    ], color: Colors.white, shape: BoxShape.circle);
 
     rightHandler = _MakeHandler(
-      animation: _rightHandlerScaleAnimation,
-      id: rightHandlerKey,
-      visibleTouchArea: widget.visibleTouchArea,
-      handlerData: tmpInputRightHandler ??
-          FlutterSliderHandler(
-              icon: Icon(
-                  (widget.axis == Axis.horizontal)
-                      ? Icons.chevron_left
-                      : Icons.expand_less,
-                  color: Colors.black45)),
-      width: _handlersWidth,
-      height: _handlersHeight,
-      axis: widget.axis,
-    );
-
-    /*Left Handler Data*/
-    IconData hIcon = (widget.axis == Axis.horizontal)
-        ? Icons.chevron_right
-        : Icons.expand_more;
-    if (widget.rtl && !widget.rangeSlider) {
-      hIcon = (widget.axis == Axis.horizontal)
-          ? Icons.chevron_left
-          : Icons.expand_less;
-    }
-
-    FlutterSliderHandler tmpInputHandler;
-    if (widget.handler != null &&
-        (widget.handler.icon != null || widget.handler.child != null))
-      tmpInputHandler = widget.handler;
+        animation: _rightHandlerScaleAnimation,
+        id: rightHandlerKey,
+        visibleTouchArea: widget.visibleTouchArea,
+        handlerData: widget.rightHandler,
+        width: _handlersWidth,
+        height: _handlersHeight,
+        axis: widget.axis,
+        handlerIndex: 2,
+        touchSize: _touchSize);
 
     leftHandler = _MakeHandler(
         animation: _leftHandlerScaleAnimation,
         id: leftHandlerKey,
         visibleTouchArea: widget.visibleTouchArea,
-        handlerData: tmpInputHandler ??
-            FlutterSliderHandler(icon: Icon(hIcon, color: Colors.black45)),
+        handlerData: widget.handler,
         width: _handlersWidth,
         height: _handlersHeight,
-        axis: widget.axis);
+        rtl: widget.rtl,
+        rangeSlider: widget.rangeSlider,
+        axis: widget.axis,
+        touchSize: _touchSize);
 
     if (widget.rangeSlider == false) {
       rightHandler = leftHandler;
@@ -710,8 +682,13 @@ class _FlutterSliderState extends State<FlutterSlider>
       }
     }
 
+    double tS = _touchSize;
+    if (widget.jump) {
+      tS = _touchSize + _handlersPadding;
+    }
+
     if (validMove &&
-            __axisPosTmp - (_touchSize) <= __rightHandlerPosition + 1 &&
+            __axisPosTmp - tS <= __rightHandlerPosition + 1 &&
             __axisPosTmp + _handlersPadding >=
                 _handlersPadding - 1 /* - _leftPadding*/
         ) {
@@ -850,7 +827,7 @@ class _FlutterSliderState extends State<FlutterSlider>
 
     if (validMove &&
         __axisPosTmp - tS >= __leftHandlerPosition - 1 &&
-        __axisPosTmp + rM <= __containerSizeWithoutHalfPadding) {
+        __middle + rM <= __containerSizeWithoutHalfPadding) {
       double tmpUpperValue = __rAxis;
 
       if (tmpUpperValue > _fakeMax) tmpUpperValue = _fakeMax;
@@ -867,7 +844,7 @@ class _FlutterSliderState extends State<FlutterSlider>
                 (_touchSize);
 
         // drag from right to left
-        if (__middle <= des + (handlerOrTouch + handlerOrTouch / 2) &&
+        if (__middle <= des + (handlerOrTouch + handlerOrTouch / 4) &&
             (__middle >= des - (handlerOrTouch + handlerOrTouch / 2))) {
           _upperValue = tmpUpperValue;
           __rightHandlerPosition = des;
@@ -1291,10 +1268,9 @@ class _FlutterSliderState extends State<FlutterSlider>
       left = _leftHandlerXPosition + _handlersWidth / 2 + (_touchSize);
       if (widget.rtl == true && widget.rangeSlider == false) {
         left = null;
-        right = _handlersPadding;
-        width = _containerWidthWithoutPadding -
-            _rightHandlerXPosition -
-            _handlersPadding / 2;
+        right = _handlersWidth;
+        width =
+            _containerWidthWithoutPadding - _rightHandlerXPosition - _touchSize;
       }
     } else {
       right = 0;
@@ -1303,10 +1279,10 @@ class _FlutterSliderState extends State<FlutterSlider>
       top = _leftHandlerYPosition + _handlersHeight / 2 + (_touchSize);
       if (widget.rtl == true && widget.rangeSlider == false) {
         top = null;
-        bottom = _handlersPadding;
+        bottom = _handlersHeight;
         height = _containerHeightWithoutPadding -
             _rightHandlerYPosition -
-            _handlersPadding / 2;
+            _touchSize;
       }
     }
 
@@ -1399,6 +1375,10 @@ class _MakeHandler extends StatelessWidget {
   final bool visibleTouchArea;
   final Animation animation;
   final Axis axis;
+  final int handlerIndex;
+  final bool rtl;
+  final bool rangeSlider;
+  final double touchSize;
 
   _MakeHandler(
       {this.id,
@@ -1407,64 +1387,103 @@ class _MakeHandler extends StatelessWidget {
       this.width,
       this.height,
       this.animation,
-      this.axis});
+      this.rtl = false,
+      this.rangeSlider = false,
+      this.axis,
+      this.handlerIndex,
+      this.touchSize});
 
   @override
   Widget build(BuildContext context) {
     double touchOpacity = (visibleTouchArea == true) ? 1 : 0;
 
     double localWidth, localHeight;
-    if (axis == Axis.vertical) localHeight = height + (_touchSize * 2);
+    localHeight = height + (touchSize * 2);
+    localWidth = width + (touchSize * 2);
 
-    if (axis == Axis.horizontal) localWidth = width + (_touchSize * 2);
+    FlutterSliderHandler handler = handlerData ?? FlutterSliderHandler();
 
-    return Container(
-      key: id,
-      width: localWidth,
-      height: localHeight,
-      child: Stack(children: <Widget>[
-        Opacity(
-          opacity: touchOpacity,
-          child: Container(
-            color: Colors.black12,
-            child: Container(),
+    if (handlerIndex == 2) {
+      handler.child ??= Icon(
+          (axis == Axis.horizontal) ? Icons.chevron_left : Icons.expand_less,
+          color: Colors.black45);
+    } else {
+      IconData hIcon =
+          (axis == Axis.horizontal) ? Icons.chevron_right : Icons.expand_more;
+      if (rtl && !rangeSlider) {
+        hIcon =
+            (axis == Axis.horizontal) ? Icons.chevron_left : Icons.expand_less;
+      }
+      handler.child ??= Icon(hIcon, color: Colors.black45);
+    }
+
+    handler.disabled ??= false;
+    handler.decoration ??= BoxDecoration(boxShadow: [
+      BoxShadow(
+          color: Colors.black26,
+          blurRadius: 2,
+          spreadRadius: 0.2,
+          offset: Offset(0, 1))
+    ], color: Colors.white, shape: BoxShape.circle);
+
+    return Center(
+      child: Container(
+        key: id,
+        width: localWidth,
+        height: localHeight,
+        child: Stack(children: <Widget>[
+          Opacity(
+            opacity: touchOpacity,
+            child: Container(
+              color: Colors.black12,
+              child: Container(),
+            ),
           ),
-        ),
-        Center(
-          child: ScaleTransition(
-            scale: animation,
-            child: handlerData.child ??
-                Container(
+          Center(
+            child: ScaleTransition(
+              scale: animation,
+              child: Opacity(
+                opacity: 1,
+                child: Container(
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(boxShadow: [
-                    BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 2,
-                        spreadRadius: 0.2,
-                        offset: Offset(0, 1))
-                  ], color: Colors.white, shape: BoxShape.circle),
+                  foregroundDecoration: handler.foregroundDecoration,
+                  decoration: handler.decoration,
+                  transform: handler.transform,
                   width: width,
                   height: height,
-                  child: handlerData.icon,
+                  child: handler.child,
                 ),
-          ),
-        )
-      ]),
+              ),
+            ),
+          )
+        ]),
+      ),
     );
   }
 }
 
 class FlutterSliderHandler {
-  final Widget child;
-  final Icon icon;
-  final bool disabled;
+  BoxDecoration decoration;
+  BoxDecoration foregroundDecoration;
+  Matrix4 transform;
+  Widget child;
+  bool disabled;
 
-  FlutterSliderHandler({this.child, this.icon, this.disabled = false})
+  FlutterSliderHandler(
+      {this.child,
+      this.decoration,
+      this.foregroundDecoration,
+      this.transform,
+      this.disabled = false})
       : assert(disabled != null);
 
   @override
   String toString() {
-    return child.toString() + icon.toString();
+    return child.toString() +
+        disabled.toString() +
+        decoration.toString() +
+        foregroundDecoration.toString() +
+        transform.toString();
   }
 }
 

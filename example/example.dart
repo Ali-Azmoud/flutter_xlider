@@ -93,17 +93,18 @@ class _MyHomePageState extends State<MyHomePage> {
                   numberFormat: intl.NumberFormat(),
                 ),
                 handler: FlutterSliderHandler(
+                  decoration: BoxDecoration(),
                   child: Material(
                     type: MaterialType.canvas,
                     color: Colors.orange,
-                    elevation: 3,
+                    elevation: 10,
                     child: Container(
                         padding: EdgeInsets.all(5),
                         child: Icon(Icons.adjust, size: 25,)),
                   ),
                 ),
                 rightHandler: FlutterSliderHandler(
-                  icon: Icon(Icons.chevron_left, color: Colors.red, size: 24,),
+                  child: Icon(Icons.chevron_left, color: Colors.red, size: 24,),
                 ),
                 disabled: false,
 
@@ -177,6 +178,11 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
           ),
+
+
+
+
+
           Container(
             margin: EdgeInsets.only(top: 50, left: 50, right: 50),
             alignment: Alignment.centerLeft,
@@ -193,6 +199,62 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
           ),
+
+
+
+
+
+          /*Hatch Mark Example*/
+          Container(
+            height: 50,
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: FlutterSlider(
+              handlerWidth: 15,
+              hatchMark: FlutterSliderHatchMark(
+                distanceFromTrackBar: 5,
+                density: 0.5,
+                labels: [
+                  FlutterSliderHatchMarkLabel(percent: 0, label: 'Start'),
+                  FlutterSliderHatchMarkLabel(percent: 10, label: '10,000'),
+                  FlutterSliderHatchMarkLabel(percent: 50, label: '50 %'),
+                  FlutterSliderHatchMarkLabel(percent: 80, label: '80,000'),
+                  FlutterSliderHatchMarkLabel(percent: 100, label: 'Finish'),
+                ],
+              ),
+              jump: true,
+              trackBar: FlutterSliderTrackBar(
+                activeTrackBarColor: Colors.blue[500],
+              ),
+              handler: FlutterSliderHandler(
+                decoration: BoxDecoration(),
+                child: Container(
+                  decoration: new BoxDecoration(
+                    color: Colors.blue,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+              rightHandler: FlutterSliderHandler(
+                decoration: BoxDecoration(),
+                child: Container(
+                  decoration: new BoxDecoration(
+                    color: Colors.blue,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+              values: [30000, 70000],
+              visibleTouchArea: true,
+              min: 0,
+              max: 100000,
+              touchSize: 15,
+              rangeSlider: true,
+              step: 1000,
+              onDragging: (handlerIndex, lowerValue, upperValue) {},
+            ),
+          ),
+
+
           SizedBox(
             height: 50,
           ),
@@ -207,6 +269,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   customHandler(IconData icon){
     return FlutterSliderHandler(
+      decoration: BoxDecoration(),
       child: Container(
         child: Container(
           margin: EdgeInsets.all(5),

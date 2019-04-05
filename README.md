@@ -75,16 +75,17 @@ FlutterSlider(
 ## Handlers
 
 You can customize handlers using `handler` and `rightHandler` properties.  
-Both `handler` and `rightHandler` accept `FlutterSliderHandler` class which has `icon`, `child` and `disabled` properties  
+Both `handler` and `rightHandler` accept `FlutterSliderHandler` class which has following properties:  
 
-1. `icon` is used to only change and customize the icon of handlers.
-2. `child` is a widget, if you pass a widget to it, the `icon` property will be ignored
-3. `disabled` to disable the handler
+1. `child`: is a widget
+2. `disabled`: to disable the handler
+3. `decoration`, `foregroundDecoration` and `transform` are come from `Container()` widget
 
 ```dart
 FlutterSlider(
   ...
   handler: FlutterSliderHandler(
+    decoration: BoxDecoration(),
     child: Material(
       type: MaterialType.canvas,
       color: Colors.orange,
@@ -95,7 +96,7 @@ FlutterSlider(
     ),
   ),
   rightHandler: FlutterSliderHandler(
-    icon: Icon(Icons.chevron_left, color: Colors.red, size: 24,),
+    child: Icon(Icons.chevron_left, color: Colors.red, size: 24,),
   ),
   ...
 )
@@ -248,9 +249,6 @@ FlutterSlider(
 )
 ```
 
-**Whether you make new widget by `handler` or `rightHandler` and set their width and height explicitly,
-but `handlerWidth` and `handlerHeight` are the main size for measuring handlers movement**
-
 ### Select By Tap
 
 You can tap on the slider to select it's value.  
@@ -376,19 +374,14 @@ FlutterSlider(
   
     
     
-**You MUST define with or height for the parent container of your slider to display `hatchMark` properly.**
+**You MUST define width or height for the parent container of your slider to display `hatchMark` properly.**
 
-
-### ~~Touch Zone~~
-
-~~You can control how big a handler's touch area could be. by default touch zone is 2  
-the range is between 1 to 5~~
 
 
 ### Touch Size
 
 You can control how big a handler's touch area could be. by default touch size is 25
-The range is between 10 to 100
+The range is between 5 to 50
 
 ```dart
 FlutterSlider(

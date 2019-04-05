@@ -25,7 +25,7 @@ FlutterSlider(
 
 ![](images/single.gif)
 
-to make slider `Right To Left` use `rtl: true`
+To make slider `Right To Left` use `rtl: true`
 
 ```dart
  FlutterSlider(
@@ -129,7 +129,7 @@ FlutterSlider(
 
 ## Trackbars
 
-to customize track bars you can use `FlutterSliderTrackBar`. [You can see the details here](https://pub.dartlang.org/documentation/flutter_xlider/latest/flutter_xlider/FlutterSliderTrackBar/FlutterSliderTrackBar.html)
+To customize track bars you can use `FlutterSliderTrackBar`. [You can see the details here](https://pub.dartlang.org/documentation/flutter_xlider/latest/flutter_xlider/FlutterSliderTrackBar/FlutterSliderTrackBar.html)
 
 ```dart
 FlutterSlider(
@@ -145,7 +145,7 @@ FlutterSlider(
 
 ## Tooltips
 
-in order to customize your tooltips, you can use `FlutterSliderTooltip` class. [You can see all properties here](https://pub.dartlang.org/documentation/flutter_xlider/latest/flutter_xlider/FlutterSliderTooltip/FlutterSliderTooltip.html)
+In order to customize your tooltips, you can use `FlutterSliderTooltip` class. [You can see all properties here](https://pub.dartlang.org/documentation/flutter_xlider/latest/flutter_xlider/FlutterSliderTooltip/FlutterSliderTooltip.html)
 
 ```dart
 FlutterSlider(
@@ -186,7 +186,7 @@ FlutterSlider(
 
 ### Tooltip Number Format
 
-you can customize tooltip numbers by using `NumberFormat` class  
+You can customize tooltip numbers by using `NumberFormat` class  
 here is an example  
 
 ```dart
@@ -199,7 +199,7 @@ FlutterSlider(
   ...
 )
 ```
-you can find more about [NumberFormat](https://docs.flutter.io/flutter/intl/NumberFormat-class.html)
+You can find more about [NumberFormat](https://docs.flutter.io/flutter/intl/NumberFormat-class.html)
 
 ![](images/range-compact.gif)
 
@@ -220,7 +220,7 @@ FlutterSlider(
 
 ### Always Show Tooltips
 
-tooltips always displayed if this property is set to `true`.
+Tooltips always displayed if this property is set to `true`.
 
 ```dart
 FlutterSlider(
@@ -269,7 +269,7 @@ FlutterSlider(
 
 ### Jump
 
-by default slider handlers move fluently, if you set `jump` to true, handlers will jump between intervals
+By default slider handlers move fluently, if you set `jump` to true, handlers will jump between intervals
 
 ```dart
 FlutterSlider(
@@ -293,7 +293,7 @@ FlutterSlider(
 
 ### Ignore Steps
 
-if your configurations requires that some steps are not available, you can use `ignoreSteps` property.  
+If your configurations requires that some steps are not available, you can use `ignoreSteps` property.  
 this property accepts a simple class to define `from` and `to` ranges.
 
 ```dart
@@ -311,7 +311,7 @@ FlutterSlider(
 
 ### Minimum Distance
 
-when using range slider, the minimum distance between two handlers can be defined using `minimumDistance` option
+When using range slider, the minimum distance between two handlers can be defined using `minimumDistance` option
 
 ```dart
 FlutterSlider(
@@ -325,7 +325,7 @@ FlutterSlider(
 
 ### Maximum Distance
 
-this is the opposite of minimum distance, when using range slider, the maximum distance between two handlers can be defined using `maximumDistance` option
+This is the opposite of minimum distance, when using range slider, the maximum distance between two handlers can be defined using `maximumDistance` option
 
 ```dart
 FlutterSlider(
@@ -338,7 +338,41 @@ FlutterSlider(
 ![](images/range-maximum-distance.gif)
 
 
+### Hatch Mark
 
+You can display a `Hatch Mark` underneath or beside of your slider based on `axis`. In order to display hatch mark you should   
+use `FlutterSliderHatchMark` class which has following properties:
+
+1. `distanceFromTrackBar`: The distance between slider and hatch mark
+2. `density`: The amount of lines per percent. 1 is default. any number less or more than 1 will decrease and increase lines respectively
+3. `labels`: If you want to display some label or text at certain percent in your hatch mark, you can use `labels`
+4. `smallLine`: The widget of small lines in hatch mark
+5. `bigLine`: The widget of big lines in hatch mark
+6. `labelBox`: The widget of label box
+
+Here is an example:
+
+```dart
+FlutterSlider(
+  ...
+    hatchMark: FlutterSliderHatchMark(
+       distanceFromTrackBar: 10,
+       density: 0.5,
+       labels: [
+         FlutterSliderHatchMarkLabel(percent: 0, label: 'Start'),
+         FlutterSliderHatchMarkLabel(percent: 10, label: '10,000'),
+         FlutterSliderHatchMarkLabel(percent: 50, label: '50 %'),
+         FlutterSliderHatchMarkLabel(percent: 80, label: '80,000'),
+         FlutterSliderHatchMarkLabel(percent: 100, label: 'Finish'),
+       ],
+     ),
+  ...
+)
+```
+
+![](images/hatch-mark.gif)
+
+**You MUST define with or height for the parent container of your slider to display `hatchMark` properly.**
 
 
 ### ~~Touch Zone~~

@@ -46,6 +46,7 @@ class FlutterSlider extends StatefulWidget {
   final FlutterSliderTooltip tooltip;
   final FlutterSliderTrackBar trackBar;
   final double step;
+  final FlutterSliderHatchMark hatchMark;
 
   FlutterSlider(
       {this.key,
@@ -73,7 +74,8 @@ class FlutterSlider extends StatefulWidget {
       this.trackBar = const FlutterSliderTrackBar(),
       this.handlerAnimation = const FlutterSliderHandlerAnimation(),
       this.selectByTap = true,
-      this.step = 1})
+      this.step = 1,
+      this.hatchMark})
       : assert(touchSize == null ||
             (touchSize != null && (touchSize >= 10 && touchSize <= 100))),
         assert(values != null),
@@ -163,6 +165,8 @@ class _FlutterSliderState extends State<FlutterSlider>
   double xDragStart;
   double yDragStart;
 
+  List<Positioned> _points = [];
+
   double __dAxis,
       __rAxis,
       __axisDragTmp,
@@ -208,6 +212,15 @@ class _FlutterSliderState extends State<FlutterSlider>
     _tooltipData.disabled ??= false;
 
     _arrangeHandlersZIndex();
+
+//    _plusSpinnerStyle = widget.plusButton ?? SpinnerButtonStyle();
+//    _plusSpinnerStyle.child ??= Icon(Icons.add, size: 16);
+
+//    if (widget.divisions != null) {
+//      _divisions = widget.divisions;
+//    } else {
+//      _divisions = (_fakeMax / 1000) < 1000 ? _fakeMax : (_fakeMax / 1000);
+//    }
 
     _originalToolTipData = _tooltipData.toString();
 
@@ -299,6 +312,11 @@ class _FlutterSliderState extends State<FlutterSlider>
     _finalLeftHandlerHeight = _handlersHeight;
     _finalRightHandlerHeight = _handlersHeight;
 
+//    if(widget.axis == Axis.vertical) {
+//      animationStart = Offset(0.20, 0);
+//      animationFinish = Offset(-0.52, 0);
+//    }
+
     _leftHandlerScaleAnimationController = AnimationController(
         duration: widget.handlerAnimation.duration, vsync: this);
     _rightHandlerScaleAnimationController = AnimationController(
@@ -379,7 +397,118 @@ class _FlutterSliderState extends State<FlutterSlider>
 
     _arrangeHandlersPosition();
 
+    _drawHatchMark();
+
     setState(() {});
+  }
+
+  void _drawHatchMark() {
+    if (widget.hatchMark == null || widget.hatchMark.disabled) return;
+
+    FlutterSliderHatchMark hatchMark =
+        widget.hatchMark ?? FlutterSliderHatchMark();
+    hatchMark.density ??= 1;
+    hatchMark.distanceFromTrackBar ??= 8;
+    hatchMark.labelTextStyle ??= TextStyle(fontSize: 12);
+    hatchMark.smallLine ??= FlutterSliderSizedBox(
+        height: 5, width: 1, decoration: BoxDecoration(color: Colors.black45));
+    hatchMark.bigLine ??= FlutterSliderSizedBox(
+        height: 9, width: 2, decoration: BoxDecoration(color: Colors.black45));
+    hatchMark.labelBox ??= FlutterSliderSizedBox(height: 35, width: 50);
+
+    double percent = 100 * hatchMark.density;
+    double top, left, barWidth, barHeight, distance;
+
+    if (widget.axis == Axis.horizontal) {
+      top = _constraintMaxHeight / 2 + hatchMark.distanceFromTrackBar;
+      distance = ((_constraintMaxWidth - _handlersWidth) / percent);
+    } else {
+      left = _constraintMaxWidth / 2 + hatchMark.distanceFromTrackBar;
+      distance = ((_constraintMaxHeight - _handlersHeight) / percent);
+    }
+
+    for (int p = 0; p <= percent; p++) {
+      String label = '';
+      FlutterSliderSizedBox barLineBox = hatchMark.smallLine;
+      Widget barLine;
+      double labelBoxHalfSize = 0;
+
+      List<Widget> labelWidget = [];
+      if (widget.hatchMark.labels.length > 0) {
+        for (FlutterSliderHatchMarkLabel markLabel in widget.hatchMark.labels) {
+          double tr = markLabel.percent;
+          if (widget.rtl) tr = 100 - tr;
+          if (tr * hatchMark.density == p) {
+            label = markLabel.label;
+
+            barLineBox = hatchMark.bigLine;
+
+            if (widget.axis == Axis.horizontal) {
+              labelBoxHalfSize = hatchMark.labelBox.width / 2 - 0.5;
+            } else {
+              labelBoxHalfSize = hatchMark.labelBox.height / 2 - 0.5;
+            }
+
+            labelWidget = [
+              SizedBox(
+                width: 2,
+                height: 2,
+              ),
+              Container(
+                height: hatchMark.labelBox.height,
+                width: hatchMark.labelBox.width,
+                decoration: hatchMark.labelBox.decoration,
+                foregroundDecoration: hatchMark.labelBox.foregroundDecoration,
+                transform: hatchMark.labelBox.transform,
+                child: Center(
+                    child: Text(
+                  label,
+                  style: hatchMark.labelTextStyle,
+                  maxLines: 5,
+                  overflow: TextOverflow.visible,
+                  textAlign: TextAlign.center,
+                )),
+              )
+            ];
+
+            break;
+          }
+        }
+      }
+
+      if (widget.axis == Axis.horizontal) {
+        barHeight = barLineBox.height;
+        barWidth = barLineBox.width;
+      } else {
+        barHeight = barLineBox.width;
+        barWidth = barLineBox.height;
+      }
+
+      barLine = Container(
+        decoration: barLineBox.decoration,
+        foregroundDecoration: barLineBox.foregroundDecoration,
+        transform: barLineBox.transform,
+        height: barHeight,
+        width: barWidth,
+      );
+
+      List<Widget> barContents = [barLine]..addAll(labelWidget);
+
+      Widget bar;
+      if (widget.axis == Axis.horizontal) {
+        bar = Column(
+          children: barContents,
+        );
+        left = (p * distance) + _handlersPadding - labelBoxHalfSize;
+      } else {
+        bar = Row(
+          children: barContents,
+        );
+        top = (p * distance) + _handlersPadding - labelBoxHalfSize;
+      }
+
+      _points.add(Positioned(top: top, left: left, child: bar));
+    }
   }
 
   @override
@@ -396,6 +525,9 @@ class _FlutterSliderState extends State<FlutterSlider>
         _originalRightHandler != widget.rightHandler.toString() ||
         _originalToolTipData != widget.tooltip.toString()) {
       bool reArrangePositions = false;
+
+//        if(_originalMin != widget.min || _originalMax != widget.max)
+//          reArrangePositions = true;
 
       _setParameters();
 
@@ -590,20 +722,15 @@ class _FlutterSliderState extends State<FlutterSlider>
       if (tmpLowerValue > _upperValue) tmpLowerValue = _upperValue;
 
       if (widget.jump == true) {
+        double handlerOrTouch =
+            (__handlerSize > _touchSize) ? __handlerSize : _touchSize;
+
         double des =
             ((__containerSizeWithoutHandlerSize / _fakeMax) * tmpLowerValue) -
                 (_touchSize);
 
-        if (__middle <=
-                des +
-                    ((__handlerSize > _touchSize)
-                        ? __handlerSize
-                        : _touchSize) &&
-            (__middle >=
-                des -
-                    ((__handlerSize > _touchSize)
-                        ? __handlerSize
-                        : _touchSize))) {
+        if (__middle <= des + (handlerOrTouch + handlerOrTouch / 2) &&
+            (__middle >= des - (handlerOrTouch + handlerOrTouch / 2))) {
           _lowerValue = tmpLowerValue;
           __leftHandlerPosition = des;
 
@@ -713,9 +840,17 @@ class _FlutterSliderState extends State<FlutterSlider>
       }
     }
 
+    /*
+    * if (validMove &&
+        __axisPosTmp - (_touchSize) <= __rightHandlerPosition + 1 &&
+        __axisPosTmp + _handlersPadding >=
+            _handlersPadding - 1 /* - _leftPadding*/
+    )
+    * */
+
     if (validMove &&
-        __axisPosTmp >= __leftHandlerPosition - 1 + (_touchSize) &&
-        __axisPosTmp + _handlersPadding <= __containerSizeWithoutHalfPadding) {
+        __axisPosTmp + (_touchSize) >= __leftHandlerPosition - 1 &&
+        __axisPosTmp - _handlersWidth <= __containerSizeWithoutHalfPadding) {
       double tmpUpperValue = __rAxis;
 
       if (tmpUpperValue > _fakeMax) tmpUpperValue = _fakeMax;
@@ -724,34 +859,21 @@ class _FlutterSliderState extends State<FlutterSlider>
       if (tmpUpperValue < _lowerValue) tmpUpperValue = _lowerValue;
 
       if (widget.jump == true) {
+        double handlerOrTouch =
+            (__handlerSize > _touchSize) ? __handlerSize : _touchSize;
+
         double des =
             ((__containerSizeWithoutHandlerSize / _fakeMax) * tmpUpperValue) -
                 (_touchSize);
 
         // drag from right to left
-        if (__middle <=
-                des +
-                    ((__handlerSize > _touchSize)
-                        ? __handlerSize
-                        : _touchSize) &&
-            (__middle >=
-                des -
-                    ((__handlerSize > _touchSize)
-                        ? __handlerSize
-                        : _touchSize))) {
+        if (__middle <= des + (handlerOrTouch + handlerOrTouch / 2) &&
+            (__middle >= des - (handlerOrTouch + handlerOrTouch / 2))) {
           _upperValue = tmpUpperValue;
           __rightHandlerPosition = des;
 
           _updateUpperValue(tmpUpperValue);
         }
-
-/*        else if (__dragStartPoint < __dAxis) {
-
-          _upperValue = tmpUpperValue;
-          __rightHandlerPosition = des;
-
-          _updateUpperValue(tmpUpperValue);
-        }*/
       } else {
         _upperValue = tmpUpperValue;
 
@@ -964,70 +1086,75 @@ class _FlutterSliderState extends State<FlutterSlider>
   }
 
   drawHandlers() {
-    List<Positioned> items = [
-      Function.apply(_inactiveTrack, []),
-      Function.apply(_activeTrack, []),
-      Positioned(
-          left: 0,
-          right: 0,
-          top: 0,
-          bottom: 0,
-          child: Opacity(
-            opacity: 0,
-            child: Listener(
-              onPointerDown: (_) {
-                if (widget.selectByTap) {
-                  double distanceFromLeftHandler,
-                      distanceFromRightHandler,
-                      tappedPositionWithPadding;
+    List<Positioned> items = []
+      ..addAll(_points)
+      ..addAll([
+//      Function.apply(_leftInactiveTrack, []),
+//      Function.apply(_rightInactiveTrack, []),
+        Function.apply(_inactiveTrack, []),
+        Function.apply(_activeTrack, []),
+        Positioned(
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: 0,
+            child: Opacity(
+              opacity: 0,
+              child: Listener(
+                onPointerDown: (_) {
+                  if (widget.selectByTap) {
+                    double distanceFromLeftHandler,
+                        distanceFromRightHandler,
+                        tappedPositionWithPadding;
 
-                  if (widget.axis == Axis.horizontal) {
-                    tappedPositionWithPadding =
-                        _handlersPadding + (_touchSize) - xDragTmp;
-                    distanceFromLeftHandler = ((_leftHandlerXPosition +
-                                _handlersPadding +
-                                (_touchSize)) +
-                            _containerLeft -
-                            _.position.dx)
-                        .abs();
-                    distanceFromRightHandler = ((_rightHandlerXPosition +
-                                _handlersPadding +
-                                (_touchSize)) +
-                            _containerLeft -
-                            _.position.dx)
-                        .abs();
-                  } else {
-                    tappedPositionWithPadding =
-                        _handlersPadding + (_touchSize) - yDragTmp;
-                    distanceFromLeftHandler = ((_leftHandlerYPosition +
-                                _handlersPadding +
-                                (_touchSize)) +
-                            _containerTop -
-                            _.position.dy)
-                        .abs();
-                    distanceFromRightHandler = ((_rightHandlerYPosition +
-                                _handlersPadding +
-                                (_touchSize)) +
-                            _containerTop -
-                            _.position.dy)
-                        .abs();
-                  }
-
-                  if (distanceFromLeftHandler < distanceFromRightHandler) {
-                    if (!widget.rangeSlider) {
-                      _rightHandlerMove(_, tappedPositionWithPadding);
+                    if (widget.axis == Axis.horizontal) {
+                      tappedPositionWithPadding =
+                          _handlersPadding + (_touchSize) - xDragTmp;
+                      distanceFromLeftHandler = ((_leftHandlerXPosition +
+                                  _handlersPadding +
+                                  (_touchSize)) +
+                              _containerLeft -
+                              _.position.dx)
+                          .abs();
+                      distanceFromRightHandler = ((_rightHandlerXPosition +
+                                  _handlersPadding +
+                                  (_touchSize)) +
+                              _containerLeft -
+                              _.position.dx)
+                          .abs();
                     } else {
-                      _leftHandlerMove(_, tappedPositionWithPadding);
+                      tappedPositionWithPadding =
+                          _handlersPadding + (_touchSize) - yDragTmp;
+                      distanceFromLeftHandler = ((_leftHandlerYPosition +
+                                  _handlersPadding +
+                                  (_touchSize)) +
+                              _containerTop -
+                              _.position.dy)
+                          .abs();
+                      distanceFromRightHandler = ((_rightHandlerYPosition +
+                                  _handlersPadding +
+                                  (_touchSize)) +
+                              _containerTop -
+                              _.position.dy)
+                          .abs();
                     }
-                  } else
-                    _rightHandlerMove(_, tappedPositionWithPadding);
-                }
-              },
-              child: Container(
+
+                    if (distanceFromLeftHandler < distanceFromRightHandler) {
+                      if (!widget.rangeSlider) {
+                        _rightHandlerMove(_, tappedPositionWithPadding);
+                      } else {
+                        _leftHandlerMove(_, tappedPositionWithPadding);
+                      }
+                    } else
+                      _rightHandlerMove(_, tappedPositionWithPadding);
+                  }
+                },
+                child: Container(
+                  color: Colors.redAccent,
+                ),
               ),
-            ),
-          )),
-    ];
+            )),
+      ]);
 
     for (Function func in _positionedItems) {
       items.add(Function.apply(func, []));
@@ -1080,6 +1207,17 @@ class _FlutterSliderState extends State<FlutterSlider>
             )),
       ),
     ));
+
+//    double top, left, right, bottom;
+//    top = left = right = bottom = -50;
+//    if(widget.axis == Axis.horizontal) {
+//      top = -(_containerHeight - _handlersHeight);
+//      bottom = null;
+//    } else {
+//      top = bottom = 20;
+//      right = null;
+//      left = -(_containerWidth - _handlersWidth);
+//    }
 
     double top = -(_containerHeight - _handlersHeight);
     if (widget.axis == Axis.vertical) top = -_handlersHeight + 10;
@@ -1152,11 +1290,11 @@ class _FlutterSliderState extends State<FlutterSlider>
       width = _rightHandlerXPosition - _leftHandlerXPosition;
       left = _leftHandlerXPosition + _handlersWidth / 2 + (_touchSize);
       if (widget.rtl == true && widget.rangeSlider == false) {
-        left = _rightHandlerXPosition + (_touchSize);
-        width = _constraintMaxWidth -
+        left = null;
+        right = _handlersPadding;
+        width = _containerWidthWithoutPadding -
             _rightHandlerXPosition -
-            _handlersWidth / 2 -
-            (_touchSize);
+            _handlersPadding / 2;
       }
     } else {
       right = 0;
@@ -1164,11 +1302,11 @@ class _FlutterSliderState extends State<FlutterSlider>
       height = _rightHandlerYPosition - _leftHandlerYPosition;
       top = _leftHandlerYPosition + _handlersHeight / 2 + (_touchSize);
       if (widget.rtl == true && widget.rangeSlider == false) {
-        top = _rightHandlerYPosition + (_touchSize);
-        height = _constraintMaxHeight -
+        top = null;
+        bottom = _handlersPadding;
+        height = _containerHeightWithoutPadding -
             _rightHandlerYPosition -
-            _handlersHeight / 2 -
-            (_touchSize);
+            _handlersPadding / 2;
       }
     }
 
@@ -1216,6 +1354,10 @@ class _FlutterSliderState extends State<FlutterSlider>
 
   double _displayRealValue(double value) {
     return double.parse((value + widget.min).toStringAsFixed(_decimalScale));
+    // return (value + widget.min);
+//    if(_decimalScale > 0) {
+//    }
+//    return double.parse((value + widget.min).floor().toStringAsFixed(_decimalScale));
   }
 
   void _arrangeHandlersZIndex() {
@@ -1423,4 +1565,61 @@ class FlutterSliderHandlerAnimation {
       this.duration = const Duration(milliseconds: 700),
       this.scale = 1.3})
       : assert(curve != null && duration != null && scale != null);
+}
+
+class FlutterSliderHatchMark {
+  bool disabled;
+  double density;
+  double distanceFromTrackBar;
+  TextStyle labelTextStyle;
+  List<FlutterSliderHatchMarkLabel> labels;
+  FlutterSliderSizedBox smallLine;
+  FlutterSliderSizedBox bigLine;
+  FlutterSliderSizedBox labelBox;
+
+  FlutterSliderHatchMark({
+    this.disabled = false,
+    this.density = 1,
+    this.distanceFromTrackBar,
+    this.labels,
+    this.labelTextStyle,
+    this.smallLine,
+    this.bigLine,
+    this.labelBox,
+  })  : assert(disabled != null),
+        assert(density != null && density > 0 && density <= 2);
+}
+
+class FlutterSliderHatchMarkLabel {
+  final double percent;
+  final String label;
+
+  FlutterSliderHatchMarkLabel({this.percent, this.label})
+      : assert((label == null && percent == null) ||
+            (label != null && percent != null && percent >= 0));
+}
+
+class FlutterSliderSizedBox {
+  final BoxDecoration decoration;
+  final BoxDecoration foregroundDecoration;
+  final Matrix4 transform;
+  final double width;
+  final double height;
+
+  const FlutterSliderSizedBox(
+      {this.decoration,
+      this.foregroundDecoration,
+      this.transform,
+      @required this.height,
+      @required this.width})
+      : assert(width != null && height != null && width > 0 && height > 0);
+
+  @override
+  String toString() {
+    return width.toString() +
+        height.toString() +
+        decoration.toString() +
+        foregroundDecoration.toString() +
+        transform.toString();
+  }
 }

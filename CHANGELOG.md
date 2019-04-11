@@ -60,6 +60,11 @@
 * trackbar disabled color feature added
 * More accurate handlers movement 
 
-## [2.4.0] - 04/05/2019
+## [2.4.2] - 04/05/2019
 
 * hatchMark feature added
+* bug fix
+
+## [2.4.3] - 04/11/2019
+
+* hatchMark label textStyle added

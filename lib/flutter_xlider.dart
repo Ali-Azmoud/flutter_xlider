@@ -1,6 +1,8 @@
+/// A material design slider and range slider with rtl support and lots of options and customizations for flutter
+
+
 /*
 * *
-* * A material design slider and range slider with rtl support and lots of options and customizations for flutter
 * * Written by Ali Azmoude <ali.azmoude@gmail.com>
 * *
 * *
@@ -13,7 +15,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 import 'dart:core';
 
-/// A material design slider and range slider with rtl support and lots of options and customizations for flutter
 class FlutterSlider extends StatefulWidget {
   final Key key;
   final Axis axis;
@@ -292,7 +293,7 @@ class _FlutterSliderState extends State<FlutterSlider>
 
   @override
   void initState() {
-    _touchSize = widget.touchSize ?? 25;
+    _touchSize = widget.touchSize ?? 15;
 
     // validate inputs
     _validations();
@@ -381,6 +382,7 @@ class _FlutterSliderState extends State<FlutterSlider>
 
   void _drawHatchMark() {
     if (widget.hatchMark == null || widget.hatchMark.disabled) return;
+    _points = [];
 
     FlutterSliderHatchMark hatchMark =
         widget.hatchMark ?? FlutterSliderHatchMark();
@@ -415,6 +417,7 @@ class _FlutterSliderState extends State<FlutterSlider>
       if (widget.hatchMark.labels.length > 0) {
         for (FlutterSliderHatchMarkLabel markLabel in widget.hatchMark.labels) {
           double tr = markLabel.percent;
+
           if (widget.rtl) tr = 100 - tr;
           if (tr * hatchMark.density == p) {
             label = markLabel.label;
@@ -441,7 +444,7 @@ class _FlutterSliderState extends State<FlutterSlider>
                 child: Center(
                     child: Text(
                   label,
-                  style: hatchMark.labelTextStyle,
+                  style: markLabel.textStyle ?? hatchMark.labelTextStyle,
                   maxLines: 5,
 //                  overflow: TextOverflow.visible,
                   textAlign: TextAlign.center,
@@ -477,12 +480,12 @@ class _FlutterSliderState extends State<FlutterSlider>
         bar = Column(
           children: barContents,
         );
-        left = (p * distance) + _handlersPadding - labelBoxHalfSize;
+        left = (p * distance) + _handlersPadding - labelBoxHalfSize - 0.5;
       } else {
         bar = Row(
           children: barContents,
         );
-        top = (p * distance) + _handlersPadding - labelBoxHalfSize;
+        top = (p * distance) + _handlersPadding - labelBoxHalfSize - 0.5;
       }
 
       _points.add(Positioned(
@@ -519,6 +522,8 @@ class _FlutterSliderState extends State<FlutterSlider>
         _arrangeHandlersPosition();
       }
     }
+
+    _drawHatchMark();
 
     super.didUpdateWidget(oldWidget);
   }
@@ -1086,7 +1091,7 @@ class _FlutterSliderState extends State<FlutterSlider>
 
                     if (widget.axis == Axis.horizontal) {
                       tappedPositionWithPadding =
-                          _handlersPadding + (_touchSize) - xDragTmp;
+                          _handlersWidth + (_touchSize) - xDragTmp;
                       distanceFromLeftHandler = ((_leftHandlerXPosition +
                                   _handlersPadding +
                                   (_touchSize)) +
@@ -1101,7 +1106,7 @@ class _FlutterSliderState extends State<FlutterSlider>
                           .abs();
                     } else {
                       tappedPositionWithPadding =
-                          _handlersPadding + (_touchSize) - yDragTmp;
+                          _handlersHeight + (_touchSize) - yDragTmp;
                       distanceFromLeftHandler = ((_leftHandlerYPosition +
                                   _handlersPadding +
                                   (_touchSize)) +
@@ -1612,9 +1617,13 @@ class FlutterSliderHatchMark {
 class FlutterSliderHatchMarkLabel {
   final double percent;
   final String label;
+  final TextStyle textStyle;
 
-  FlutterSliderHatchMarkLabel({this.percent, this.label})
-      : assert((label == null && percent == null) ||
+  FlutterSliderHatchMarkLabel({
+    this.percent,
+    this.label,
+    this.textStyle,
+  }) : assert((label == null && percent == null) ||
             (label != null && percent != null && percent >= 0));
 }
 

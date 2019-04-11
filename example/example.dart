@@ -73,7 +73,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 values: [1000, 15000],
                 rangeSlider: true,
 //rtl: true,
-//                touchZone: 2,
                 ignoreSteps: [
                   FlutterSliderIgnoreSteps(from: 8000, to: 12000),
                   FlutterSliderIgnoreSteps(from: 18000, to: 22000),
@@ -81,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 max: 25000,
                 min: 0,
                 step: 100,
-//displayTestTouchZone: true,
+
                 jump: true,
 
                 trackBar: FlutterSliderTrackBar(
@@ -122,7 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 values: [3000, 17000],
                 rangeSlider: true,
 //rtl: true,
-//                touchZone: 2,
+
 //                ignoreSteps: [
 //                  FlutterSliderIgnoreSteps(from: 8000, to: 12000),
 //                  FlutterSliderIgnoreSteps(from: 18000, to: 22000),
@@ -130,7 +129,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 max: 25000,
                 min: 0,
                 step: 100,
-//displayTestTouchZone: true,
                 jump: true,
                 trackBar: FlutterSliderTrackBar(
                   activeTrackBarColor: Colors.blue.withOpacity(0.6),

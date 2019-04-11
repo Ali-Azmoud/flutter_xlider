@@ -338,7 +338,7 @@ FlutterSlider(
 
 ### Hatch Mark
 
-You can display a `Hatch Mark` underneath or beside of your slider based on `axis`. In order to display hatch mark you should   
+You can display a `Hatch Mark` underneath or beside of your slider based on `axis`. In order to display hatch mark you must   
 use `FlutterSliderHatchMark` class which has following properties:
 
 1. `distanceFromTrackBar`: The distance between slider and hatch mark
@@ -372,7 +372,7 @@ FlutterSlider(
 ![](images/hatch-mark.gif)
 
   
-    
+**Each Label(`FlutterSliderHatchMarkLabel`) in `labels` property, has it's own textStyle which overrides `labelTextStyle` property**  
     
 **You MUST define width or height for the parent container of your slider to display `hatchMark` properly.**
 
@@ -391,7 +391,7 @@ FlutterSlider(
 )
 ```
 
-To see the touchable area for handlers you set `visibleTouchArea` to true and test your slider
+To see the touchable area for handlers, set `visibleTouchArea` to true and test your slider
 
 
 ```dart

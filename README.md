@@ -6,8 +6,22 @@
 
 ## Get Started
 
+### Installing
+1. To use plugin, add flutter_xlider to your pubsec.yaml:
+    ```yaml
+    dependencies:
+      flutter_xlider:
+        git: https://github.com/Ali-Azmoud/flutter_xlider.git
+    ```
+2. Install it:
+	```bash
+	flutter pub get
+	```
+3. Import it:
+	```dart
+	import 'package:flutter_xlider/flutter_xlider.dart';
+	```
 ### Single Slider
-
 A single slider
 
 ```dart
@@ -371,7 +385,7 @@ FlutterSlider(
 
 ![](images/hatch-mark.gif)
 
-  
+
 **Each Label(`FlutterSliderHatchMarkLabel`) in `labels` property, has it's own textStyle which overrides `labelTextStyle` property**  
     
 **You MUST define width or height for the parent container of your slider to display `hatchMark` properly.**
@@ -458,6 +472,3 @@ FlutterSlider(
   ...
 )
 ```
-
-
-

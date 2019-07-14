@@ -57,8 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   curve: Curves.elasticOut,
                   reverseCurve: null,
                   duration: Duration(milliseconds: 700),
-                  scale: 1.4
-              ),
+                  scale: 1.4),
               onDragging: (handlerIndex, lowerValue, upperValue) {
                 _lowerValue = lowerValue;
                 _upperValue = upperValue;
@@ -84,7 +83,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 jump: true,
 
                 trackBar: FlutterSliderTrackBar(
-                  activeTrackBarColor: Colors.redAccent,
                   activeTrackBarHeight: 5,
                 ),
                 tooltip: FlutterSliderTooltip(
@@ -99,11 +97,18 @@ class _MyHomePageState extends State<MyHomePage> {
                     elevation: 10,
                     child: Container(
                         padding: EdgeInsets.all(5),
-                        child: Icon(Icons.adjust, size: 25,)),
+                        child: Icon(
+                          Icons.adjust,
+                          size: 25,
+                        )),
                   ),
                 ),
                 rightHandler: FlutterSliderHandler(
-                  child: Icon(Icons.chevron_left, color: Colors.red, size: 24,),
+                  child: Icon(
+                    Icons.chevron_left,
+                    color: Colors.red,
+                    size: 24,
+                  ),
                 ),
                 disabled: false,
 
@@ -113,7 +118,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   setState(() {});
                 },
               )),
-
           Container(
               margin: EdgeInsets.only(top: 50, left: 20, right: 20),
               alignment: Alignment.centerLeft,
@@ -131,7 +135,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 step: 100,
                 jump: true,
                 trackBar: FlutterSliderTrackBar(
-                  activeTrackBarColor: Colors.blue.withOpacity(0.6),
                   inactiveTrackBarHeight: 2,
                   activeTrackBarHeight: 3,
                 ),
@@ -142,8 +145,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 rightHandler: customHandler(Icons.chevron_left),
                 tooltip: FlutterSliderTooltip(
                   numberFormat: intl.NumberFormat(),
-                  leftPrefix: Icon(Icons.attach_money, size: 19, color: Colors.black45,),
-                  rightSuffix: Icon(Icons.attach_money, size: 19, color: Colors.black45,),
+                  leftPrefix: Icon(
+                    Icons.attach_money,
+                    size: 19,
+                    color: Colors.black45,
+                  ),
+                  rightSuffix: Icon(
+                    Icons.attach_money,
+                    size: 19,
+                    color: Colors.black45,
+                  ),
                   textStyle: TextStyle(fontSize: 17, color: Colors.black45),
                 ),
 
@@ -153,7 +164,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   setState(() {});
                 },
               )),
-
           Container(
             margin: EdgeInsets.only(top: 20, left: 20, right: 20),
             alignment: Alignment.centerLeft,
@@ -176,11 +186,6 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
           ),
-
-
-
-
-
           Container(
             margin: EdgeInsets.only(top: 50, left: 50, right: 50),
             alignment: Alignment.centerLeft,
@@ -190,6 +195,18 @@ class _MyHomePageState extends State<MyHomePage> {
               max: 100,
               min: 0,
               visibleTouchArea: true,
+              trackBar: FlutterSliderTrackBar(
+                inactiveTrackBarHeight: 14,
+                activeTrackBarHeight: 10,
+                inactiveTrackBar: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: Colors.black12,
+                  border: Border.all(width: 3, color: Colors.blue),
+                ),
+                activeTrackBar: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4),
+                    color: Colors.blue.withOpacity(0.5)),
+              ),
               onDragging: (handlerIndex, lowerValue, upperValue) {
                 _lowerValue = lowerValue;
                 _upperValue = upperValue;
@@ -197,10 +214,6 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
           ),
-
-
-
-
 
           /*Hatch Mark Example*/
           Container(
@@ -220,9 +233,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
               jump: true,
-              trackBar: FlutterSliderTrackBar(
-                activeTrackBarColor: Colors.blue[500],
-              ),
+              trackBar: FlutterSliderTrackBar(),
               handler: FlutterSliderHandler(
                 decoration: BoxDecoration(),
                 child: Container(
@@ -251,8 +262,6 @@ class _MyHomePageState extends State<MyHomePage> {
               onDragging: (handlerIndex, lowerValue, upperValue) {},
             ),
           ),
-
-
           SizedBox(
             height: 50,
           ),
@@ -264,17 +273,14 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-
-  customHandler(IconData icon){
+  customHandler(IconData icon) {
     return FlutterSliderHandler(
       decoration: BoxDecoration(),
       child: Container(
         child: Container(
           margin: EdgeInsets.all(5),
           decoration: BoxDecoration(
-              color: Colors.blue.withOpacity(0.3),
-              shape: BoxShape.circle
-          ),
+              color: Colors.blue.withOpacity(0.3), shape: BoxShape.circle),
           child: Icon(
             icon,
             color: Colors.white,

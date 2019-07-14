@@ -68,3 +68,8 @@
 ## [2.4.3] - 04/11/2019
 
 * hatchMark label textStyle added
+
+## [2.4.4] - 07/14/2019
+
+* hatchMark label position bug fixed
+* trackbar style changed to BoxDecoration

@@ -1,6 +1,6 @@
 name: flutter_xlider
 description: (Flutter Xlider) A material design slider and range slider, horizontal and vertical, with RTL support and lots of options and customizations for flutter
-version: 2.4.3
+version: 2.4.4
 author: Ali Azmoude <ali.azmoude@gmail.com>
 homepage: https://github.com/Ali-Azmoud/flutter_xlider
 
@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  intl: ^0.15.7
+  intl: ^0.15.8
 
 dev_dependencies:
   flutter_test:

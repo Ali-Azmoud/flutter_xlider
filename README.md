@@ -1,8 +1,8 @@
 # flutter_xlider
 
-(Flutter Xlider) A material design slider and range slider, horizontal and vertical, with rtl support and lots of options and customizations for flutter
+(Flutter Slider) A material design slider and range slider, horizontal and vertical, with rtl support and lots of options and customizations for flutter
 
-**Version 2.4.1 and above, will break functionality of older versions**
+**Version 2.4.4 and above, break functionality of older versions**
 
 ## Get Started
 
@@ -136,13 +136,34 @@ To customize track bars you can use `FlutterSliderTrackBar`. [You can see the de
 FlutterSlider(
   ...
     trackBar: FlutterSliderTrackBar(
-      activeTrackBarColor: Colors.redAccent,
       activeTrackBarHeight: 5,
-      inactiveTrackBarColor: Colors.greenAccent.withOpacity(0.5),
     ),
   ...
 )
 ```
+
+
+`inactiveTrackBarColor` and `activeTrackBarColor` properties are removed. use `inactiveTrackBar` and `activeTrackBar` instead.
+
+```dart
+FlutterSlider(
+  ...
+    trackBar: FlutterSliderTrackBar(
+      inactiveTrackBar: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Colors.black12,
+        border: Border.all(width: 3, color: Colors.blue),
+      ),
+      activeTrackBar: BoxDecoration(
+        borderRadius: BorderRadius.circular(4),
+        color: Colors.blue.withOpacity(0.5)
+      ),
+    ),
+  ...
+)
+```
+
+![](images/trackbar_box_decoration.PNG)
 
 ## Tooltips
 

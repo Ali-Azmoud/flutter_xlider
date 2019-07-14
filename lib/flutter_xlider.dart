@@ -1,5 +1,4 @@
-/// A material design slider and range slider with rtl support and lots of options and customizations for flutter
-
+/// A material design slider and range slider with horizontal and vertical axis, rtl support and lots of options and customizations for flutter
 
 /*
 * *
@@ -174,6 +173,8 @@ class _FlutterSliderState extends State<FlutterSlider>
       __middle,
       __containerSizeWithoutHalfPadding,
       __handlerSize;
+
+  Orientation oldOrientation;
 
   void _setParameters() {
     _handlersWidth = widget.handlerWidth ?? widget.handlerHeight ?? 35;
@@ -395,7 +396,7 @@ class _FlutterSliderState extends State<FlutterSlider>
         height: 9, width: 2, decoration: BoxDecoration(color: Colors.black45));
     hatchMark.labelBox ??= FlutterSliderSizedBox(height: 35, width: 50);
 
-    hatchMark.distanceFromTrackBar += _handlersWidth / 2.5;
+//    hatchMark.distanceFromTrackBar += _handlersWidth / 2.5;
     double percent = 100 * hatchMark.density;
     double top, left, barWidth, barHeight, distance;
 
@@ -530,34 +531,47 @@ class _FlutterSliderState extends State<FlutterSlider>
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-      _constraintMaxWidth = constraints.maxWidth - _handlersWidth;
-      _constraintMaxHeight = constraints.maxHeight - _handlersHeight;
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        oldOrientation ??= MediaQuery.of(context).orientation;
 
-      _containerWidthWithoutPadding = _constraintMaxWidth - _handlersWidth;
+        return LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+          _constraintMaxWidth = constraints.maxWidth - _handlersWidth;
+          _constraintMaxHeight = constraints.maxHeight - _handlersHeight;
 
-      _containerHeightWithoutPadding = _constraintMaxHeight - _handlersHeight;
+          _containerWidthWithoutPadding = _constraintMaxWidth - _handlersWidth;
 
-      _containerWidth = constraints.maxWidth;
-      _containerHeight = (_handlersHeight * 1.8);
+          _containerHeightWithoutPadding =
+              _constraintMaxHeight - _handlersHeight;
 
-      if (widget.axis == Axis.vertical) {
-        _containerWidth = (_handlersWidth * 1.8);
-        _containerHeight = constraints.maxHeight;
-      }
+          _containerWidth = constraints.maxWidth;
+          _containerHeight = (_handlersHeight * 1.8);
 
-      return Container(
-        padding: EdgeInsets.only(left: _handlersPadding, top: _handlersPadding),
-        key: containerKey,
-        height: _containerHeight,
-        width: _containerWidth,
-        child: Stack(
-          overflow: Overflow.visible,
-          children: drawHandlers(),
-        ),
-      );
-    });
+          if (widget.axis == Axis.vertical) {
+            _containerWidth = (_handlersWidth * 1.8);
+            _containerHeight = constraints.maxHeight;
+          }
+
+          if (MediaQuery.of(context).orientation != oldOrientation) {
+            _drawHatchMark();
+            oldOrientation = MediaQuery.of(context).orientation;
+          }
+
+          return Container(
+            padding:
+                EdgeInsets.only(left: _handlersPadding, top: _handlersPadding),
+            key: containerKey,
+            height: _containerHeight,
+            width: _containerWidth,
+            child: Stack(
+              overflow: Overflow.visible,
+              children: drawHandlers(),
+            ),
+          );
+        });
+      },
+    );
   }
 
   void _validations() {
@@ -1222,7 +1236,10 @@ class _FlutterSliderState extends State<FlutterSlider>
   }
 
   Positioned _inactiveTrack() {
-    Color trackBarColor = widget.trackBar.inactiveTrackBarColor;
+    BoxDecoration boxDecoration =
+        widget.trackBar.inactiveTrackBar ?? BoxDecoration();
+
+    Color trackBarColor = boxDecoration.color ?? Color(0x110000ff);
     if (widget.disabled)
       trackBarColor = widget.trackBar.inactiveDisabledTrackBarColor;
 
@@ -1235,6 +1252,7 @@ class _FlutterSliderState extends State<FlutterSlider>
       left = _handlersPadding;
       width = _containerWidthWithoutPadding;
       height = widget.trackBar.inactiveTrackBarHeight;
+      top = 0;
     } else {
       right = 0;
       height = _containerHeightWithoutPadding;
@@ -1251,14 +1269,25 @@ class _FlutterSliderState extends State<FlutterSlider>
         child: Container(
           height: height,
           width: width,
-          color: trackBarColor,
+          decoration: BoxDecoration(
+              color: trackBarColor,
+              backgroundBlendMode: boxDecoration.backgroundBlendMode,
+              shape: boxDecoration.shape,
+              gradient: boxDecoration.gradient,
+              border: boxDecoration.border,
+              borderRadius: boxDecoration.borderRadius,
+              boxShadow: boxDecoration.boxShadow,
+              image: boxDecoration.image),
         ),
       ),
     );
   }
 
   Positioned _activeTrack() {
-    Color trackBarColor = widget.trackBar.activeTrackBarColor;
+    BoxDecoration boxDecoration =
+        widget.trackBar.activeTrackBar ?? BoxDecoration();
+
+    Color trackBarColor = boxDecoration.color ?? Color(0xff2196F3);
     if (widget.disabled)
       trackBarColor = widget.trackBar.activeDisabledTrackBarColor;
 
@@ -1303,7 +1332,15 @@ class _FlutterSliderState extends State<FlutterSlider>
         child: Container(
           height: height,
           width: width,
-          color: trackBarColor,
+          decoration: BoxDecoration(
+              color: trackBarColor,
+              backgroundBlendMode: boxDecoration.backgroundBlendMode,
+              shape: boxDecoration.shape,
+              gradient: boxDecoration.gradient,
+              border: boxDecoration.border,
+              borderRadius: boxDecoration.borderRadius,
+              boxShadow: boxDecoration.boxShadow,
+              image: boxDecoration.image),
         ),
       ),
     );
@@ -1545,16 +1582,16 @@ class FlutterSliderTooltipBox {
 }
 
 class FlutterSliderTrackBar {
-  final Color activeTrackBarColor;
+  final BoxDecoration inactiveTrackBar;
+  final BoxDecoration activeTrackBar;
   final Color activeDisabledTrackBarColor;
-  final Color inactiveTrackBarColor;
   final Color inactiveDisabledTrackBarColor;
   final double activeTrackBarHeight;
   final double inactiveTrackBarHeight;
 
   const FlutterSliderTrackBar({
-    this.inactiveTrackBarColor = const Color(0x110000ff),
-    this.activeTrackBarColor = const Color(0xff2196F3),
+    this.inactiveTrackBar,
+    this.activeTrackBar,
     this.activeDisabledTrackBarColor = const Color(0xffb5b5b5),
     this.inactiveDisabledTrackBarColor = const Color(0xffe5e5e5),
     this.activeTrackBarHeight = 3.5,
@@ -1562,9 +1599,7 @@ class FlutterSliderTrackBar {
   })  : assert(activeTrackBarHeight != null &&
             activeTrackBarHeight > 0 &&
             inactiveTrackBarHeight != null &&
-            inactiveTrackBarHeight > 0 &&
-            activeTrackBarHeight >= inactiveTrackBarHeight),
-        assert(inactiveTrackBarColor != null && activeTrackBarColor != null),
+            inactiveTrackBarHeight > 0),
         assert(activeDisabledTrackBarColor != null &&
             inactiveDisabledTrackBarColor != null);
 }

@@ -500,13 +500,21 @@ class _FlutterSliderState extends State<FlutterSlider>
     bool upperValueEquality =
         (widget.values.length > 1 && oldWidget.values[1] != widget.values[1]);
 
-    if (lowerValueEquality ||
-        upperValueEquality ||
-        _originalMin != widget.min ||
-        _originalMax != widget.max ||
-        _originalLeftHandler != widget.handler.toString() ||
-        _originalRightHandler != widget.rightHandler.toString() ||
-        _originalToolTipData != widget.tooltip.toString()) {
+    bool lowerValueValidation =
+        widget.values[0] >= widget.min && widget.values[0] <= widget.max;
+    bool upperValueValidation = true;
+    if (widget.values.length > 1)
+      upperValueValidation = (widget.values.length > 1 &&
+          (widget.values[1] <= widget.max && widget.values[1] >= widget.min));
+
+    if ((lowerValueValidation && upperValueValidation) &&
+        (lowerValueEquality ||
+            upperValueEquality ||
+            _originalMin != widget.min ||
+            _originalMax != widget.max ||
+            _originalLeftHandler != widget.handler.toString() ||
+            _originalRightHandler != widget.rightHandler.toString() ||
+            _originalToolTipData != widget.tooltip.toString())) {
       bool reArrangePositions = false;
 
 //        if(_originalMin != widget.min || _originalMax != widget.max)

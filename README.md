@@ -492,7 +492,7 @@ There are 3 events
 
 All three of above functions returns three values. 
 ```dart
-(int handlerIndex, double lowerValue, double upperValue)
+(int handlerIndex, dynamic lowerValue, dynamic upperValue)
 ```
 
 First value is `handlerIndex`, which determines the handler. 0 is `Left Handler` and 1 refers to `Right Handler`

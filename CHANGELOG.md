@@ -77,3 +77,7 @@
 ## [2.4.5] - 07/15/2019
 
 *  min and max validation check while changing slider values manually 
+
+## [2.5.0] - 07/18/2019
+
+*  fixed values feature added

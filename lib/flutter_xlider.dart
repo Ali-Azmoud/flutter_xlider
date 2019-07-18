@@ -21,15 +21,16 @@ class FlutterSlider extends StatefulWidget {
   final double handlerHeight;
   final FlutterSliderHandler handler;
   final FlutterSliderHandler rightHandler;
-  final Function(int handlerIndex, double lowerValue, double upperValue)
+  final Function(int handlerIndex, dynamic lowerValue, dynamic upperValue)
       onDragStarted;
-  final Function(int handlerIndex, double lowerValue, double upperValue)
+  final Function(int handlerIndex, dynamic lowerValue, dynamic upperValue)
       onDragCompleted;
-  final Function(int handlerIndex, double lowerValue, double upperValue)
+  final Function(int handlerIndex, dynamic lowerValue, dynamic upperValue)
       onDragging;
   final double min;
   final double max;
   final List<double> values;
+  final List<FlutterSliderFixedValue> fixedValues;
   final bool rangeSlider;
   final bool rtl;
   final bool jump;
@@ -48,9 +49,10 @@ class FlutterSlider extends StatefulWidget {
 
   FlutterSlider(
       {this.key,
-      @required this.min,
-      @required this.max,
+      this.min,
+      this.max,
       @required this.values,
+      this.fixedValues,
       this.axis = Axis.horizontal,
       this.handler,
       this.rightHandler,
@@ -76,8 +78,20 @@ class FlutterSlider extends StatefulWidget {
       this.hatchMark})
       : assert(touchSize == null ||
             (touchSize != null && (touchSize >= 5 && touchSize <= 50))),
-        assert(values != null),
-        assert(min != null && max != null && min <= max),
+        assert(values != null && values[0] <= values[1]),
+        assert(
+            fixedValues != null || (min != null && max != null && min <= max),
+            "Min and Max are required if fixedValues is null"),
+        assert(
+            fixedValues == null ||
+                (fixedValues != null && values[0] >= 0 && values[0] <= 100),
+            "When using fixedValues, you should set values within the range of fixedValues"),
+        assert(
+            fixedValues == null ||
+                (fixedValues != null &&
+                    values[1] >= values[0] &&
+                    values[1] <= 100),
+            "When using fixedValues, you should set values within the range of fixedValues"),
         assert(handlerAnimation != null),
         super(key: key);
 
@@ -99,8 +113,8 @@ class _FlutterSliderState extends State<FlutterSlider>
 
   double _lowerValue = 0;
   double _upperValue = 0;
-  double _outputLowerValue = 0;
-  double _outputUpperValue = 0;
+  dynamic _outputLowerValue = 0;
+  dynamic _outputUpperValue = 0;
 
   double _fakeMin;
   double _fakeMax;
@@ -160,6 +174,12 @@ class _FlutterSliderState extends State<FlutterSlider>
   double xDragStart;
   double yDragStart;
 
+  double _widgetStep;
+  double _widgetMin;
+  double _widgetMax;
+  List<FlutterSliderIgnoreSteps> _ignoreSteps = [];
+  List<FlutterSliderFixedValue> _fixedValues = [];
+
   List<Positioned> _points = [];
 
   double __dAxis,
@@ -177,18 +197,52 @@ class _FlutterSliderState extends State<FlutterSlider>
   Orientation oldOrientation;
 
   void _setParameters() {
+    _fakeMin = 0;
+    _widgetMax = widget.max;
+    _widgetMin = widget.min;
+
+    if (widget.fixedValues != null && widget.fixedValues.length > 0) {
+      _fakeMax = widget.fixedValues.last.percent.toDouble();
+      _widgetStep = 1;
+      _widgetMax = widget.fixedValues.last.percent.toDouble();
+      _widgetMin = widget.fixedValues.first.percent.toDouble();
+
+      List<double> fixedValuesIndices = [];
+      for (FlutterSliderFixedValue fixedValue in widget.fixedValues) {
+        fixedValuesIndices.add(fixedValue.percent.toDouble());
+      }
+      for (double fixedPercent = 0; fixedPercent <= 100; fixedPercent++) {
+        dynamic fValue = '';
+        for (FlutterSliderFixedValue fixedValue in widget.fixedValues) {
+          if (fixedValue.percent == fixedPercent.toInt()) {
+            fixedValuesIndices.add(fixedValue.percent.toDouble());
+            fValue = fixedValue.value;
+            break;
+          }
+        }
+        _fixedValues.add(FlutterSliderFixedValue(
+            percent: fixedPercent.toInt(), value: fValue));
+
+        if (!fixedValuesIndices.contains(fixedPercent)) {
+          _ignoreSteps.add(FlutterSliderIgnoreSteps(
+              from: fixedPercent.toDouble(), to: fixedPercent.toDouble()));
+        }
+      }
+    } else {
+      _fakeMax = _widgetMax - _widgetMin;
+      _widgetStep = widget.step;
+    }
+    _ignoreSteps..addAll(widget.ignoreSteps);
+
     _handlersWidth = widget.handlerWidth ?? widget.handlerHeight ?? 35;
     _handlersHeight = widget.handlerHeight ?? widget.handlerWidth ?? 35;
 
     _originalLeftHandler = widget.handler.toString();
     _originalRightHandler = widget.rightHandler.toString();
 
-    _fakeMin = 0;
-    _fakeMax = widget.max - widget.min;
+    _divisions = _fakeMax / _widgetStep;
 
-    _divisions = _fakeMax / widget.step;
-
-    String tmpDecimalScale = widget.step.toString().split(".")[1];
+    String tmpDecimalScale = _widgetStep.toString().split(".")[1];
     if (int.parse(tmpDecimalScale) > 0) {
       _decimalScale = tmpDecimalScale.length;
     }
@@ -236,12 +290,12 @@ class _FlutterSliderState extends State<FlutterSlider>
       // when direction is rtl, then we use left handler. so to make right hand side
       // as blue ( as if selected ), then upper value should be max
       if (widget.rtl) {
-        localUV = widget.max;
+        localUV = _widgetMax;
       } else {
         // when direction is ltr, so we use right handler, to make left hand side of handler
         // as blue ( as if selected ), we set lower value to min, and upper value to (input lower value)
         localUV = localLV;
-        localLV = widget.min;
+        localLV = _widgetMin;
       }
     }
 
@@ -253,8 +307,8 @@ class _FlutterSliderState extends State<FlutterSlider>
 
     List<double> localValues = _calculateUpperAndLowerValues();
 
-    _lowerValue = localValues[0] - widget.min;
-    _upperValue = localValues[1] - widget.min;
+    _lowerValue = localValues[0] - _widgetMin;
+    _upperValue = localValues[1] - _widgetMin;
 
     _outputUpperValue = _displayRealValue(_upperValue);
     _outputLowerValue = _displayRealValue(_lowerValue);
@@ -294,6 +348,17 @@ class _FlutterSliderState extends State<FlutterSlider>
 
   @override
   void initState() {
+    _widgetMax = widget.max;
+    _widgetMin = widget.min;
+
+    if (widget.fixedValues != null && widget.fixedValues.length > 0) {
+      _originalMin = 0;
+      _originalMax = widget.fixedValues.length.toDouble();
+    } else {
+      _originalMin = _widgetMin;
+      _originalMax = _widgetMax;
+    }
+
     _touchSize = widget.touchSize ?? 15;
 
     // validate inputs
@@ -302,7 +367,7 @@ class _FlutterSliderState extends State<FlutterSlider>
     // to display min of the range correctly.
     // if we use fakes, then min is always 0
     // so calculations works well, but when we want to display
-    // result numbers to user, we add ( widget.min ) to the final numbers
+    // result numbers to user, we add ( _widgetMin ) to the final numbers
 
 //    if(widget.axis == Axis.vertical) {
 //      animationStart = Offset(0.20, 0);
@@ -325,9 +390,6 @@ class _FlutterSliderState extends State<FlutterSlider>
                 parent: _rightHandlerScaleAnimationController,
                 reverseCurve: widget.handlerAnimation.reverseCurve,
                 curve: widget.handlerAnimation.curve));
-
-    _originalMin = widget.min;
-    _originalMax = widget.max;
 
     _setParameters();
     _setValues();
@@ -501,23 +563,23 @@ class _FlutterSliderState extends State<FlutterSlider>
         (widget.values.length > 1 && oldWidget.values[1] != widget.values[1]);
 
     bool lowerValueValidation =
-        widget.values[0] >= widget.min && widget.values[0] <= widget.max;
+        widget.values[0] >= _widgetMin && widget.values[0] <= _widgetMax;
     bool upperValueValidation = true;
     if (widget.values.length > 1)
       upperValueValidation = (widget.values.length > 1 &&
-          (widget.values[1] <= widget.max && widget.values[1] >= widget.min));
+          (widget.values[1] <= _widgetMax && widget.values[1] >= _widgetMin));
 
     if ((lowerValueValidation && upperValueValidation) &&
         (lowerValueEquality ||
             upperValueEquality ||
-            _originalMin != widget.min ||
-            _originalMax != widget.max ||
+            _originalMin != _widgetMin ||
+            _originalMax != _widgetMax ||
             _originalLeftHandler != widget.handler.toString() ||
             _originalRightHandler != widget.rightHandler.toString() ||
             _originalToolTipData != widget.tooltip.toString())) {
       bool reArrangePositions = false;
 
-//        if(_originalMin != widget.min || _originalMax != widget.max)
+//        if(_originalMin != _widgetMin || _originalMax != _widgetMax)
 //          reArrangePositions = true;
 
       _setParameters();
@@ -586,12 +648,25 @@ class _FlutterSliderState extends State<FlutterSlider>
     if (widget.rangeSlider == true && widget.values.length < 2)
       throw 'when range mode is true, slider needs both lower and upper values';
 
-    if (widget.values[0] != null && widget.values[0] < widget.min)
-      throw 'Lower value should be greater than min';
+    if (widget.fixedValues == null) {
+      if (widget.values[0] != null && widget.values[0] < _widgetMin)
+        throw 'Lower value should be greater than min';
 
-    if (widget.rangeSlider == true) {
-      if (widget.values[1] != null && widget.values[1] > widget.max)
-        throw 'Upper value should be smaller than max';
+      if (widget.rangeSlider == true) {
+        if (widget.values[1] != null && widget.values[1] > _widgetMax)
+          throw 'Upper value should be smaller than max';
+      }
+    } else {
+      if (!(widget.fixedValues != null &&
+          widget.values[0] >= 0 &&
+          widget.values[0] <= 100)) {
+        throw 'When using fixedValues, you should set values within the range of fixedValues';
+      }
+      if (!(widget.fixedValues != null &&
+          widget.values[1] >= 0 &&
+          widget.values[1] <= 100)) {
+        throw 'When using fixedValues, you should set values within the range of fixedValues';
+      }
     }
   }
 
@@ -672,9 +747,9 @@ class _FlutterSliderState extends State<FlutterSlider>
 
     __axisPosTmp = __dAxis - __axisDragTmp + (_touchSize);
     __rAxis = ((__axisPosTmp / (__containerSizeWithoutPadding / _divisions)) *
-        widget.step);
+        _widgetStep);
     __rAxis = (double.parse(__rAxis.toStringAsFixed(_decimalScale)) -
-        double.parse((__rAxis % widget.step).toStringAsFixed(_decimalScale)));
+        double.parse((__rAxis % _widgetStep).toStringAsFixed(_decimalScale)));
 
     if (widget.rangeSlider &&
         widget.minimumDistance > 0 &&
@@ -696,8 +771,8 @@ class _FlutterSliderState extends State<FlutterSlider>
       _updateLowerValue(_lowerValue);
     }
 
-    if (widget.ignoreSteps.length > 0) {
-      for (FlutterSliderIgnoreSteps steps in widget.ignoreSteps) {
+    if (_ignoreSteps.length > 0) {
+      for (FlutterSliderIgnoreSteps steps in _ignoreSteps) {
         if (!((widget.rtl == false &&
                 (__rAxis >= steps.from && __rAxis <= steps.to) == false) ||
             (widget.rtl == true &&
@@ -809,9 +884,9 @@ class _FlutterSliderState extends State<FlutterSlider>
     __axisPosTmp = __dAxis - __axisDragTmp + (_touchSize);
 
     __rAxis = ((__axisPosTmp / (__containerSizeWithoutPadding / _divisions)) *
-        widget.step);
+        _widgetStep);
     __rAxis = (double.parse(__rAxis.toStringAsFixed(_decimalScale)) -
-        double.parse((__rAxis % widget.step).toStringAsFixed(_decimalScale)));
+        double.parse((__rAxis % _widgetStep).toStringAsFixed(_decimalScale)));
 
     if (widget.rangeSlider &&
         widget.minimumDistance > 0 &&
@@ -832,8 +907,8 @@ class _FlutterSliderState extends State<FlutterSlider>
       _updateUpperValue(_upperValue);
     }
 
-    if (widget.ignoreSteps.length > 0) {
-      for (FlutterSliderIgnoreSteps steps in widget.ignoreSteps) {
+    if (_ignoreSteps.length > 0) {
+      for (FlutterSliderIgnoreSteps steps in _ignoreSteps) {
         if (!((widget.rtl == false &&
                 (__rAxis >= steps.from && __rAxis <= steps.to) == false) ||
             (widget.rtl == true &&
@@ -1168,8 +1243,8 @@ class _FlutterSliderState extends State<FlutterSlider>
   }
 
   Positioned _tooltip(
-      {String side, double value, double opacity, Animation animation}) {
-    if (_tooltipData.disabled)
+      {String side, dynamic value, double opacity, Animation animation}) {
+    if (_tooltipData.disabled || value == '')
       return Positioned(
         child: Container(),
       );
@@ -1355,8 +1430,8 @@ class _FlutterSliderState extends State<FlutterSlider>
   }
 
   void _callbacks(String callbackName, int handlerIndex) {
-    double lowerValue = _outputLowerValue;
-    double upperValue = _outputUpperValue;
+    dynamic lowerValue = _outputLowerValue;
+    dynamic upperValue = _outputUpperValue;
     if (widget.rtl == true || widget.rangeSlider == false) {
       lowerValue = _outputUpperValue;
       upperValue = _outputLowerValue;
@@ -1378,12 +1453,16 @@ class _FlutterSliderState extends State<FlutterSlider>
     }
   }
 
-  double _displayRealValue(double value) {
-    return double.parse((value + widget.min).toStringAsFixed(_decimalScale));
-    // return (value + widget.min);
+  dynamic _displayRealValue(double value) {
+    if (_fixedValues.length > 0) {
+      return _fixedValues[value.toInt()].value;
+    }
+
+    return double.parse((value + _widgetMin).toStringAsFixed(_decimalScale));
+    // return (value + _widgetMin);
 //    if(_decimalScale > 0) {
 //    }
-//    return double.parse((value + widget.min).floor().toStringAsFixed(_decimalScale));
+//    return double.parse((value + _widgetMin).floor().toStringAsFixed(_decimalScale));
   }
 
   void _arrangeHandlersZIndex() {
@@ -1618,6 +1697,15 @@ class FlutterSliderIgnoreSteps {
 
   FlutterSliderIgnoreSteps({this.from, this.to})
       : assert(from != null && to != null && from <= to);
+}
+
+class FlutterSliderFixedValue {
+  final int percent;
+  final dynamic value;
+
+  FlutterSliderFixedValue({this.percent, this.value})
+      : assert(
+            percent != null && value != null && percent >= 0 && percent <= 100);
 }
 
 class FlutterSliderHandlerAnimation {

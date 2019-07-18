@@ -328,6 +328,39 @@ FlutterSlider(
 
 ![](images/range-ignore-steps.gif)
 
+
+### Fixed Values
+
+If you want to have an array of fixed items and slide through it, you can use `fixedValues` property. use `FlutterSliderFixedValue` to add your fixed values.  
+`FlutterSliderFixedValue` has following properties:
+
+1. `percent`: (int) ( between 0..100 inclusive). the position of fixed item
+2. `value`: (dynamic) the value of fixed item
+
+* when using `fixedValues`, values of `values` property, must be within 0..100
+
+```dart
+FlutterSlider(
+  ...
+    values: [ 10, 50 ],
+    fixedValues: [
+      FlutterSliderFixedValue(percent: 0, value: "1000"),
+      FlutterSliderFixedValue(percent: 10, value: "10K"),
+      FlutterSliderFixedValue(percent: 50, value: 50000),
+      FlutterSliderFixedValue(percent: 80, value: "80M"),
+      FlutterSliderFixedValue(percent: 100, value: "100B"),
+    ],
+  ...
+)
+```
+
+using above example, you get `(string) 10K` as `upperValue` or `lowerValue` (depends on handler), when you reach to 10 percent of the slider,
+you get `(int) 50000` when you reach 50 percent of the slider and so on...
+ 
+**when using `fixedValues`, `min` and `max` are ignored**
+
+![](images/fixed-values.gif)
+
 ### Minimum Distance
 
 When using range slider, the minimum distance between two handlers can be defined using `minimumDistance` option

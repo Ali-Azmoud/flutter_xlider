@@ -215,6 +215,31 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
 
+
+
+          /*Fixed Values*/
+          Container(
+            height: 80,
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: FlutterSlider(
+              jump: true,
+              values: [10],
+              fixedValues: [
+                FlutterSliderFixedValue(percent: 0, value: "1000"),
+                FlutterSliderFixedValue(percent: 10, value: "10K"),
+                FlutterSliderFixedValue(percent: 50, value: 50000),
+                FlutterSliderFixedValue(percent: 80, value: "80M"),
+                FlutterSliderFixedValue(percent: 100, value: "100B"),
+              ],
+              onDragging: (handlerIndex, lowerValue, upperValue) {
+                _lowerValue = lowerValue;
+                setState(() {
+
+                });
+              },
+            ),
+          ),
+
           /*Hatch Mark Example*/
           Container(
             height: 50,

@@ -78,20 +78,15 @@ class FlutterSlider extends StatefulWidget {
       this.hatchMark})
       : assert(touchSize == null ||
             (touchSize != null && (touchSize >= 5 && touchSize <= 50))),
-        assert(values != null && values[0] <= values[1]),
+        assert(values != null),
         assert(
             fixedValues != null || (min != null && max != null && min <= max),
             "Min and Max are required if fixedValues is null"),
         assert(
-            fixedValues == null ||
-                (fixedValues != null && values[0] >= 0 && values[0] <= 100),
-            "When using fixedValues, you should set values within the range of fixedValues"),
-        assert(
-            fixedValues == null ||
-                (fixedValues != null &&
-                    values[1] >= values[0] &&
-                    values[1] <= 100),
-            "When using fixedValues, you should set values within the range of fixedValues"),
+            rangeSlider == false || (rangeSlider == true && values.length > 1),
+            "Range slider needs two values"),
+//        assert( fixedValues == null || (fixedValues != null && values[0] >= 0 && values[0] <= 100), "When using fixedValues, you should set values within the range of fixedValues" ),
+//        assert( fixedValues == null || (fixedValues != null && values.length > 1 && values[1] >= values[0] && values[1] <= 100), "When using fixedValues, you should set values within the range of fixedValues" ),
         assert(handlerAnimation != null),
         super(key: key);
 
@@ -662,11 +657,19 @@ class _FlutterSliderState extends State<FlutterSlider>
           widget.values[0] <= 100)) {
         throw 'When using fixedValues, you should set values within the range of fixedValues';
       }
-      if (!(widget.fixedValues != null &&
-          widget.values[1] >= 0 &&
-          widget.values[1] <= 100)) {
-        throw 'When using fixedValues, you should set values within the range of fixedValues';
+
+      if (widget.rangeSlider == true && widget.values.length > 1) {
+        if (!(widget.fixedValues != null &&
+            widget.values[1] >= 0 &&
+            widget.values[1] <= 100)) {
+          throw 'When using fixedValues, you should set values within the range of fixedValues';
+        }
       }
+    }
+
+    if (widget.rangeSlider == true) {
+      if (widget.values[0] > widget.values[1])
+        throw 'Lower value must be smaller than upper value';
     }
   }
 

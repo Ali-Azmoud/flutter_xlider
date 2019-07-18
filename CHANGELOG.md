@@ -81,3 +81,7 @@
 ## [2.5.0] - 07/18/2019
 
 *  fixed values feature added
+
+## [2.5.1] - 07/18/2019
+
+* bug fix

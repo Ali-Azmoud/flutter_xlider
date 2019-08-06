@@ -512,6 +512,13 @@ FlutterSlider(
   ...
 )
 ```
+**If you use `selectByTap`, then only `onDragStarted` and `onDragCompleted` will fire.**
+
+
+## Donate
+if you found this library helpful, and want to say thanks, consider buying me a cup of coffee
+
+My Bitcoin Address: `1PRejtdqsVNfJk9Hzr9WKfH3fTwfSWgn7U`
 
 
 

@@ -619,7 +619,12 @@ class _FlutterSliderState extends State<FlutterSlider>
           }
 
           if (MediaQuery.of(context).orientation != oldOrientation) {
+            _renderBoxInitialization();
+
+            _arrangeHandlersPosition();
+
             _drawHatchMark();
+
             oldOrientation = MediaQuery.of(context).orientation;
           }
 
@@ -720,9 +725,13 @@ class _FlutterSliderState extends State<FlutterSlider>
   }
 
   void _leftHandlerMove(PointerEvent pointer,
-      [double tappedPositionWithPadding = 0]) {
+      {double tappedPositionWithPadding = 0, bool selectedByTap = false}) {
     if (widget.disabled || (widget.handler != null && widget.handler.disabled))
       return;
+
+    if (selectedByTap) {
+      _callbacks('onDragStarted', 0);
+    }
 
     bool validMove = true;
 
@@ -841,7 +850,11 @@ class _FlutterSliderState extends State<FlutterSlider>
 
     setState(() {});
 
-    _callbacks('onDragging', 0);
+    if (selectedByTap) {
+      _callbacks('onDragCompleted', 0);
+    } else {
+      _callbacks('onDragging', 0);
+    }
   }
 
   void _updateLowerValue(value) {
@@ -852,9 +865,13 @@ class _FlutterSliderState extends State<FlutterSlider>
   }
 
   void _rightHandlerMove(PointerEvent pointer,
-      [double tappedPositionWithPadding = 0]) {
+      {double tappedPositionWithPadding = 0, bool selectedByTap = false}) {
     if (widget.disabled ||
         (widget.rightHandler != null && widget.rightHandler.disabled)) return;
+
+    if (selectedByTap) {
+      _callbacks('onDragStarted', 1);
+    }
 
     bool validMove = true;
 
@@ -973,7 +990,11 @@ class _FlutterSliderState extends State<FlutterSlider>
 
     setState(() {});
 
-    _callbacks('onDragging', 1);
+    if (selectedByTap) {
+      _callbacks('onDragCompleted', 1);
+    } else {
+      _callbacks('onDragging', 1);
+    }
   }
 
   void _updateUpperValue(value) {
@@ -1223,12 +1244,20 @@ class _FlutterSliderState extends State<FlutterSlider>
 
                     if (distanceFromLeftHandler < distanceFromRightHandler) {
                       if (!widget.rangeSlider) {
-                        _rightHandlerMove(_, tappedPositionWithPadding);
+                        _rightHandlerMove(_,
+                            tappedPositionWithPadding:
+                                tappedPositionWithPadding,
+                            selectedByTap: true);
                       } else {
-                        _leftHandlerMove(_, tappedPositionWithPadding);
+                        _leftHandlerMove(_,
+                            tappedPositionWithPadding:
+                                tappedPositionWithPadding,
+                            selectedByTap: true);
                       }
                     } else
-                      _rightHandlerMove(_, tappedPositionWithPadding);
+                      _rightHandlerMove(_,
+                          tappedPositionWithPadding: tappedPositionWithPadding,
+                          selectedByTap: true);
                   }
                 },
                 child: Container(

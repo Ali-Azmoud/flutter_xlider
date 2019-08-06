@@ -520,5 +520,7 @@ if you found this library helpful, and want to say thanks, consider buying me a 
 
 My Bitcoin Address: `1PRejtdqsVNfJk9Hzr9WKfH3fTwfSWgn7U`
 
+## Donate
+if you found this library helpful, and want to say thanks, consider buying me a cup of coffee
 
-
+My Bitcoin Address: `1PRejtdqsVNfJk9Hzr9WKfH3fTwfSWgn7U`

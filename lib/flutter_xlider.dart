@@ -227,6 +227,11 @@ class _FlutterSliderState extends State<FlutterSlider>
       _fakeMax = _widgetMax - _widgetMin;
       _widgetStep = widget.step;
     }
+
+    if (widget.fixedValues == null && (_widgetMax - _widgetMin) <= 1 && _widgetStep == 1) {
+      _widgetStep = (_widgetMax - _widgetMin) / 10.0;
+    }
+
     _ignoreSteps..addAll(widget.ignoreSteps);
 
     _handlersWidth = widget.handlerWidth ?? widget.handlerHeight ?? 35;

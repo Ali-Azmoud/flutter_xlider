@@ -579,7 +579,10 @@ class _FlutterSliderState extends State<FlutterSlider>
 
       _setParameters();
 
-      if (lowerValueEquality || upperValueEquality) {
+      if (_originalMin != widget.min ||
+          _originalMax != widget.max ||
+          lowerValueEquality ||
+          upperValueEquality) {
         reArrangePositions = true;
         _setValues();
       }

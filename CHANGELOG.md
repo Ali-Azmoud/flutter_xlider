@@ -100,3 +100,7 @@
 * handlers alignment bug fixed
 * hatchMark exception fixed
 * recalculate min and max when changing their value
+
+## [2.6.1] - 08/06/2019
+
+* minor changes

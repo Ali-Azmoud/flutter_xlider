@@ -89,3 +89,14 @@
 ## [2.5.2] - 08/06/2019
 
 * orientation bug fix
+
+## [2.5.3] - 08/06/2019
+
+* update dependencies versions
+
+## [2.6.0] - 08/06/2019
+
+* handlers reaching max, min bug fixed
+* handlers alignment bug fixed
+* hatchMark exception fixed
+* recalculate min and max when changing their value

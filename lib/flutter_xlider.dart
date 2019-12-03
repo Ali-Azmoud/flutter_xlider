@@ -947,9 +947,16 @@ class _FlutterSliderState extends State<FlutterSlider>
       tS = -_touchSize;
     }
 
+    bool forcePosStop = false;
+    if (!widget.jump &&
+        __axisPosTmp >= __containerSizeWithoutPadding + _handlersPadding) {
+      forcePosStop = true;
+    }
+
     if (validMove &&
         __axisPosTmp - tS >= __leftHandlerPosition - 1 &&
-        __axisPosTmp + rM <= __containerSizeWithoutHalfPadding) {
+        (__axisPosTmp + rM <= __containerSizeWithoutHalfPadding ||
+            forcePosStop)) {
       double tmpUpperValue = __rAxis;
 
       if (tmpUpperValue > _fakeMax) tmpUpperValue = _fakeMax;
@@ -976,7 +983,10 @@ class _FlutterSliderState extends State<FlutterSlider>
       } else {
         _upperValue = tmpUpperValue;
 
-        __rightHandlerPosition = __dAxis - __axisDragTmp; // - (_touchSize);
+        if (!forcePosStop)
+        {
+          __rightHandlerPosition = __dAxis - __axisDragTmp; // - (_touchSize);
+        }
 
         _updateUpperValue(tmpUpperValue);
       }

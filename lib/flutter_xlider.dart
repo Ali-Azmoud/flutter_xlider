@@ -589,7 +589,7 @@ class _FlutterSliderState extends State<FlutterSlider>
       }
     }
 
-    _drawHatchMark();
+    //_drawHatchMark(); - supposedly fixes https://github.com/Ali-Azmoud/flutter_xlider/issues/25
 
     super.didUpdateWidget(oldWidget);
   }

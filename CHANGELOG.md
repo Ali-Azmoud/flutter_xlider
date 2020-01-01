@@ -94,13 +94,26 @@
 
 * update dependencies versions
 
-## [2.6.0] - 08/06/2019
+## [2.6.0] - 12/04/2019
 
 * handlers reaching max, min bug fixed
 * handlers alignment bug fixed
 * hatchMark exception fixed
 * recalculate min and max when changing their value
 
-## [2.6.1] - 08/06/2019
+## [2.6.1] - 12/04/2019
 
 * minor changes
+
+## [3.0.0] - 01/02/2020
+
+* More accurate handlers movement
+* HatchMark labels changed from `String` to `Widget`
+* Extra left and top paddings are removed
+* Central Widget added
+* Centered Origin feature added
+* Locked Handlers feature added
+* Custom tooltip feature added
+* Double handler movement by ActiveBar feature added
+* FixedValues update widget bug fixed
+ 

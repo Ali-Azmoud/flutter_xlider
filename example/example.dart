@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_xlider/flutter_xlider.dart';
-import 'package:intl/intl.dart' as intl;
 
 void main() => runApp(MyApp());
 
@@ -87,7 +86,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 tooltip: FlutterSliderTooltip(
                   textStyle: TextStyle(fontSize: 17, color: Colors.lightBlue),
-                  numberFormat: intl.NumberFormat(),
                 ),
                 handler: FlutterSliderHandler(
                   decoration: BoxDecoration(),
@@ -144,7 +142,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 handler: customHandler(Icons.chevron_right),
                 rightHandler: customHandler(Icons.chevron_left),
                 tooltip: FlutterSliderTooltip(
-                  numberFormat: intl.NumberFormat(),
                   leftPrefix: Icon(
                     Icons.attach_money,
                     size: 19,
@@ -173,7 +170,6 @@ class _MyHomePageState extends State<MyHomePage> {
               rangeSlider: true,
               tooltip: FlutterSliderTooltip(
                 alwaysShowTooltip: true,
-                numberFormat: intl.NumberFormat.compact(),
               ),
               max: 2000000000,
               min: 0,
@@ -215,8 +211,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
 
-
-
           /*Fixed Values*/
           Container(
             height: 80,
@@ -233,9 +227,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
               onDragging: (handlerIndex, lowerValue, upperValue) {
                 _lowerValue = lowerValue;
-                setState(() {
-
-                });
+                setState(() {});
               },
             ),
           ),
@@ -250,11 +242,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 distanceFromTrackBar: 5,
                 density: 0.5,
                 labels: [
-                  FlutterSliderHatchMarkLabel(percent: 0, label: 'Start'),
-                  FlutterSliderHatchMarkLabel(percent: 10, label: '10,000'),
-                  FlutterSliderHatchMarkLabel(percent: 50, label: '50 %'),
-                  FlutterSliderHatchMarkLabel(percent: 80, label: '80,000'),
-                  FlutterSliderHatchMarkLabel(percent: 100, label: 'Finish'),
+                  FlutterSliderHatchMarkLabel(percent: 0, label: Text('Start')),
+                  FlutterSliderHatchMarkLabel(
+                      percent: 10, label: Text('10,000')),
+                  FlutterSliderHatchMarkLabel(percent: 50, label: Text('50 %')),
+                  FlutterSliderHatchMarkLabel(
+                      percent: 80, label: Text('80,000')),
+                  FlutterSliderHatchMarkLabel(
+                      percent: 100, label: Text('Finish')),
                 ],
               ),
               jump: true,

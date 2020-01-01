@@ -2,7 +2,9 @@
 
 (Flutter Slider) A material design slider and range slider, horizontal and vertical, with rtl support and lots of options and customizations for flutter
 
-**Version 2.4.4 and above, break functionality of older versions**
+**Version 3.0.0 and above, will break functionality of older versions**
+**since version 3.0.0, Intl dependency is removed. you have to import it manually if you want to use it**
+
 
 ## Get Started
 
@@ -165,6 +167,29 @@ FlutterSlider(
 
 ![](images/trackbar_box_decoration.PNG)
 
+
+### Central Widget
+
+If you want to have a widget in the middle of your slider, you can use `centralWidget`
+
+```dart
+FlutterSlider(
+  ...
+    trackBar: FlutterSliderTrackBar(
+        centralWidget: Container(
+          decoration: BoxDecoration(
+              color: trackBarColor,
+            borderRadius: BorderRadius.circular(50)
+          ),
+          width: 9,
+          height: 9,
+        ),
+    ),
+  ...
+)
+```
+
+
 ## Tooltips
 
 In order to customize your tooltips, you can use `FlutterSliderTooltip` class. [You can see all properties here](https://pub.dartlang.org/documentation/flutter_xlider/latest/flutter_xlider/FlutterSliderTooltip/FlutterSliderTooltip.html)
@@ -203,27 +228,23 @@ FlutterSlider(
 )
 ```
 
-![](images/range-tooltip-prefix-suffix.gif)
+### Tooltip Callback
 
-
-### Tooltip Number Format
-
-You can customize tooltip numbers by using `NumberFormat` class  
-here is an example  
+If you want to fully change tooltip widget and use your own customized widget, you can use `custom` function.
 
 ```dart
 FlutterSlider(
   ...
     tooltip: FlutterSliderTooltip(
-      numberFormat: intl.compact(),
-      // numberFormat: intl.NumberFormat(),
+      custom: (value) {
+        return Text(value.toString());
+      }
     ),
   ...
 )
 ```
-You can find more about [NumberFormat](https://docs.flutter.io/flutter/intl/NumberFormat-class.html)
 
-![](images/range-compact.gif)
+![](images/range-tooltip-prefix-suffix.gif)
 
 
 ### Disable tooltip
@@ -282,6 +303,7 @@ FlutterSlider(
   ...
 )
 ```
+if you want to move your handlers by touching and moving active TrackBar, you have to set this to `false`
 
 ![](images/select-by-tap.gif)
 
@@ -390,6 +412,22 @@ FlutterSlider(
 ![](images/range-maximum-distance.gif)
 
 
+### Locked Handlers
+
+If you want to lock your handlers at a certain value, you can use `lockedHandlers` and `lockedDistance` properties
+
+```dart
+FlutterSlider(
+  ...
+    lockHandlers: true,
+    lockDistance: 50,
+  ...
+)
+```
+
+![](images/locked.gif)
+
+
 ### Hatch Mark
 
 You can display a `Hatch Mark` underneath or beside of your slider based on `axis`. In order to display hatch mark you must   
@@ -398,10 +436,9 @@ use `FlutterSliderHatchMark` class which has following properties:
 1. `distanceFromTrackBar`: The distance between slider and hatch mark
 2. `density`: The amount of lines per percent. 1 is default. any number less or more than 1 will decrease and increase lines respectively
 3. `labels`: If you want to display some label or text at certain percent in your hatch mark, you can use `labels`
-4. `labelTextStyle`: The style of the label text
-5. `smallLine`: The widget of small lines in hatch mark
-6. `bigLine`: The widget of big lines in hatch mark
-7. `labelBox`: The widget of label box
+4. `smallLine`: The widget of small lines in hatch mark
+5. `bigLine`: The widget of big lines in hatch mark
+6. `labelBox`: The widget of label box
 
 Here is an example:
 
@@ -412,11 +449,11 @@ FlutterSlider(
        distanceFromTrackBar: 10,
        density: 0.5, // means 50 lines, from 0 to 100 percent
        labels: [
-         FlutterSliderHatchMarkLabel(percent: 0, label: 'Start'),
-         FlutterSliderHatchMarkLabel(percent: 10, label: '10,000'),
-         FlutterSliderHatchMarkLabel(percent: 50, label: '50 %'),
-         FlutterSliderHatchMarkLabel(percent: 80, label: '80,000'),
-         FlutterSliderHatchMarkLabel(percent: 100, label: 'Finish'),
+         FlutterSliderHatchMarkLabel(percent: 0, label: Text('Start')),
+         FlutterSliderHatchMarkLabel(percent: 10, label: Text('10,000')),
+         FlutterSliderHatchMarkLabel(percent: 50, label: Text('50 %')),
+         FlutterSliderHatchMarkLabel(percent: 80, label: Text('80,000')),
+         FlutterSliderHatchMarkLabel(percent: 100, label: Text('Finish')),
        ],
      ),
   ...
@@ -425,11 +462,37 @@ FlutterSlider(
 
 ![](images/hatch-mark.gif)
 
-  
-**Each Label(`FlutterSliderHatchMarkLabel`) in `labels` property, has it's own textStyle which overrides `labelTextStyle` property**  
-    
-**You MUST define width or height for the parent container of your slider to display `hatchMark` properly.**
 
+### Centered Origin
+
+If you want the value of your slider originates from center of the slider, then you can use `centeredOrigin` property
+
+```dart
+FlutterSlider(
+  ...
+    centeredOrigin: true
+  ...
+  
+  ...
+    trackBar: FlutterSliderTrackBar(
+      activeTrackBar: BoxDecoration(color: trackBarColor)
+    ),
+  ...
+  
+  ...
+    onDragging: (handlerIndex, lowerValue, upperValue) {
+        if (lowerValue > (max - min) / 2) {
+          trackBarColor = Colors.blueAccent;
+        } else {
+          trackBarColor = Colors.redAccent;
+        }
+        setState(() {});
+    })
+  ...
+)
+```
+
+![](images/centered.gif)
 
 
 ### Touch Size

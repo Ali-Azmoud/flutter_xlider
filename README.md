@@ -2,7 +2,7 @@
 
 (Flutter Slider) A material design slider and range slider, horizontal and vertical, with rtl support and lots of options and customizations for flutter
 
-**Version 3.0.0 and above, will break functionality of older versions**
+**Version 3.0.0 and above, will break functionality of older versions**  
 **since version 3.0.0, Intl dependency is removed. you have to import it manually if you want to use it**
 
 
@@ -228,6 +228,9 @@ FlutterSlider(
 )
 ```
 
+![](images/range-tooltip-prefix-suffix.gif)
+
+
 ### Tooltip Callback
 
 If you want to fully change tooltip widget and use your own customized widget, you can use `custom` function.
@@ -244,7 +247,6 @@ FlutterSlider(
 )
 ```
 
-![](images/range-tooltip-prefix-suffix.gif)
 
 
 ### Disable tooltip
@@ -414,7 +416,7 @@ FlutterSlider(
 
 ### Locked Handlers
 
-If you want to lock your handlers at a certain value, you can use `lockedHandlers` and `lockedDistance` properties
+If you want to lock your handlers by a certain value, you can use `lockedHandlers` and `lockedDistance` properties
 
 ```dart
 FlutterSlider(
@@ -576,3 +578,35 @@ FlutterSlider(
 )
 ```
 **If you use `selectByTap`, then only `onDragStarted` and `onDragCompleted` will fire.**
+
+
+## Working with Dates
+
+Working with dates are simple and straightforward. just pass standard unix timestamp as values like so:
+
+```dart
+FlutterSlider(
+  ...
+  values: [
+    new DateTime(2019,6,1,0,0,0).millisecondsSinceEpoch.toDouble(), // lower date : 2019-06-01
+    new DateTime(2019,9,1,0,0,0).millisecondsSinceEpoch.toDouble(), // upper date : 2019-09-01
+  ],
+  max: new DateTime(2020,1,1,0,0,0).millisecondsSinceEpoch.toDouble(), // start date : 2019-01-01
+  min: new DateTime(2019,1,1,0,0,0).millisecondsSinceEpoch.toDouble(), // finish date : 2020-01-01
+  step: 86400, // 1 day
+  ...
+
+  ...
+  tooltip: FlutterSliderTooltip(
+    custom: (value) {
+      DateTime dtValue = DateTime.fromMillisecondsSinceEpoch(value.toInt());
+      valueInTime = dtValue.year.toString() + '-' + dtValue.month.toString() + '-' + dtValue.day.toString();
+      
+      return Text( valueInTime );
+    }
+  )
+  ...
+
+)
+```
+![](images/wwd.png)

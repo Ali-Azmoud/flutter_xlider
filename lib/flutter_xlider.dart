@@ -295,7 +295,9 @@ class _FlutterSliderState extends State<FlutterSlider>
 
     _divisions = _realMax / _widgetStep;
 
-    String tmpDecimalScale = _widgetStep.toString().split(".")[1];
+    String tmpDecimalScale = '0';
+    List<String> tmpDecimalScaleArr = _widgetStep.toString().split(".");
+    if (tmpDecimalScaleArr.length > 1) tmpDecimalScale = tmpDecimalScaleArr[1];
     if (int.parse(tmpDecimalScale) > 0) {
       _decimalScale = tmpDecimalScale.length;
     }

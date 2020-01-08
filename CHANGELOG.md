@@ -105,7 +105,7 @@
 
 * minor changes
 
-## [3.0.0] - 01/02/2020
+## [3.0.0] - 01/01/2020
 
 * More accurate handlers movement
 * HatchMark labels changed from `String` to `Widget`
@@ -117,3 +117,6 @@
 * Double handler movement by ActiveBar feature added
 * FixedValues update widget bug fixed
  
+## [3.0.1] - 01/09/2020
+
+* dart-web related bug (Index out of range) fixed

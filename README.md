@@ -3,7 +3,7 @@
 (Flutter Slider) A material design slider and range slider, horizontal and vertical, with rtl support and lots of options and customizations for flutter
 
 **Version 3.0.0 and above, will break functionality of older versions**  
-**since version 3.0.0, Intl dependency is removed. you have to import it manually if you want to use it**
+**Since version 3.0.0, Intl dependency is removed**
 
 
 ## Get Started
@@ -580,6 +580,8 @@ FlutterSlider(
 **If you use `selectByTap`, then only `onDragStarted` and `onDragCompleted` will fire.**
 
 
+
+
 ## Working with Dates
 
 Working with dates are simple and straightforward. just pass standard unix timestamp as values like so:
@@ -600,7 +602,7 @@ FlutterSlider(
   tooltip: FlutterSliderTooltip(
     custom: (value) {
       DateTime dtValue = DateTime.fromMillisecondsSinceEpoch(value.toInt());
-      valueInTime = dtValue.year.toString() + '-' + dtValue.month.toString() + '-' + dtValue.day.toString();
+      String valueInTime = dtValue.year.toString() + '-' + dtValue.month.toString() + '-' + dtValue.day.toString();
       
       return Text( valueInTime );
     }

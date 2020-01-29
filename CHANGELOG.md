@@ -115,8 +115,12 @@
 * Locked Handlers feature added
 * Custom tooltip feature added
 * Double handler movement by ActiveBar feature added
-* FixedValues update widget bug fixed
  
 ## [3.0.1] - 01/09/2020
 
 * dart-web related bug (Index out of range) fixed
+
+## [3.1.0] - 01/29/2020
+
+* FixedValues update widget bug fixed
+* minor changes

@@ -2,7 +2,7 @@
 
 (Flutter Slider) A material design slider and range slider, horizontal and vertical, with rtl support and lots of options and customizations for flutter
 
-**Version 3.0.0 and above, will break functionality of older versions**  
+**Version 3.0.0 and above, breaks functionality of older versions**  
 **Since version 3.0.0, Intl dependency is removed**
 
 
@@ -612,3 +612,9 @@ FlutterSlider(
 )
 ```
 ![](images/wwd.png)
+
+
+## Showcase
+
+It's exciting to see what you've build using this package.  
+Open `wiki` tab, create a page and share your code and image of your slider with us. Thank you   

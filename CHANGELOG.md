@@ -124,3 +124,7 @@
 
 * FixedValues update widget bug fixed
 * minor changes
+
+## [3.1.1] - 02/05/2020
+
+* tooltip related bug: `The getter 'boxStyle' was called on null` fixed

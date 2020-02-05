@@ -151,8 +151,8 @@ class FlutterSlider extends StatefulWidget {
 
 class _FlutterSliderState extends State<FlutterSlider>
     with TickerProviderStateMixin {
-  FlutterSlider __INIT_SNAPSHOT__;
-  bool _isInitCall = true;
+  FlutterSlider _initSnapshot;
+  bool __isInitCall = true;
 
   double _touchSize;
 
@@ -248,7 +248,7 @@ class _FlutterSliderState extends State<FlutterSlider>
 
   @override
   void initState() {
-    __INIT_SNAPSHOT__ = widget;
+    _initSnapshot = widget;
 
     initMethod();
 
@@ -257,8 +257,8 @@ class _FlutterSliderState extends State<FlutterSlider>
 
   @override
   void didUpdateWidget(FlutterSlider oldWidget) {
-    if (__INIT_SNAPSHOT__.toJson().toString() != widget.toJson().toString()) {
-      _isInitCall = false;
+    if (_initSnapshot.toJson().toString() != widget.toJson().toString()) {
+      __isInitCall = false;
       initMethod();
       super.didUpdateWidget(oldWidget);
     }
@@ -338,7 +338,7 @@ class _FlutterSliderState extends State<FlutterSlider>
     //      animationFinish = Offset(-0.52, 0);
     //    }
 
-    if (_isInitCall) {
+    if (__isInitCall) {
       _leftHandlerScaleAnimationController = AnimationController(
           duration: widget.handlerAnimation.duration, vsync: this);
       _rightHandlerScaleAnimationController = AnimationController(
@@ -377,7 +377,7 @@ class _FlutterSliderState extends State<FlutterSlider>
     Offset animationStart = Offset(0, 0);
     Offset animationFinish = Offset(0, -1);
 
-    if (_isInitCall) {
+    if (__isInitCall) {
       _rightTooltipOpacity = (_tooltipData.alwaysShowTooltip == true) ? 1 : 0;
       _leftTooltipOpacity = (_tooltipData.alwaysShowTooltip == true) ? 1 : 0;
 
@@ -644,20 +644,20 @@ class _FlutterSliderState extends State<FlutterSlider>
       _rightHandlerWidget,
     ];
 
-    _tooltipData = FlutterSliderTooltip();
-    _tooltipData.boxStyle = widget.tooltip.boxStyle ??
+    _tooltipData = widget.tooltip ?? FlutterSliderTooltip();
+    _tooltipData.boxStyle = _tooltipData.boxStyle ??
         FlutterSliderTooltipBox(
             decoration: BoxDecoration(
                 border: Border.all(color: Colors.black12, width: 0.5),
                 color: Color(0xffffffff)));
-    _tooltipData.textStyle = widget.tooltip.textStyle ??
+    _tooltipData.textStyle = _tooltipData.textStyle ??
         TextStyle(fontSize: 12, color: Colors.black38);
-    _tooltipData.leftPrefix = widget.tooltip.leftPrefix ?? null;
-    _tooltipData.leftSuffix = widget.tooltip.leftSuffix ?? null;
-    _tooltipData.rightPrefix = widget.tooltip.rightPrefix ?? null;
-    _tooltipData.rightSuffix = widget.tooltip.rightSuffix ?? null;
-    _tooltipData.alwaysShowTooltip = widget.tooltip.alwaysShowTooltip ?? false;
-    _tooltipData.disabled = widget.tooltip.disabled ?? false;
+    _tooltipData.leftPrefix = _tooltipData.leftPrefix ?? null;
+    _tooltipData.leftSuffix = _tooltipData.leftSuffix ?? null;
+    _tooltipData.rightPrefix = _tooltipData.rightPrefix ?? null;
+    _tooltipData.rightSuffix = _tooltipData.rightSuffix ?? null;
+    _tooltipData.alwaysShowTooltip = _tooltipData.alwaysShowTooltip ?? false;
+    _tooltipData.disabled = _tooltipData.disabled ?? false;
 
     _arrangeHandlersZIndex();
 
@@ -688,8 +688,8 @@ class _FlutterSliderState extends State<FlutterSlider>
   }
 
   void _setValues() {
-    if (__INIT_SNAPSHOT__.values.toString() != widget.values.toString() ||
-        __INIT_SNAPSHOT__.toJson().toString() == widget.toJson().toString()) {
+    if (_initSnapshot.values.toString() != widget.values.toString() ||
+        _initSnapshot.toJson().toString() == widget.toJson().toString()) {
       // lower value. if not available then min will be used
 
       List<double> localValues = _calculateUpperAndLowerValues();
@@ -1686,7 +1686,7 @@ class _FlutterSliderState extends State<FlutterSlider>
                         .abs();
                   }
                 } else {
-                  return false;
+                  return;
                 }
               }
 

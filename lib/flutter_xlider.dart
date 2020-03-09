@@ -1708,12 +1708,16 @@ class _FlutterSliderState extends State<FlutterSlider>
 
               setState(() {});
             },
-            child: Draggable(
+            child: Visibility(
+              visible: widget.trackBar.activeTrackBarDraggable,
+              child: Draggable(
                 axis: widget.axis,
                 feedback: Container(),
                 child: Container(
                   color: Colors.redAccent,
-                )),
+                ),
+              ),
+            ),
           ),
         )));
 
@@ -2215,6 +2219,7 @@ class FlutterSliderTooltipBox {
 class FlutterSliderTrackBar {
   final BoxDecoration inactiveTrackBar;
   final BoxDecoration activeTrackBar;
+  final bool activeTrackBarDraggable;
   final Color activeDisabledTrackBarColor;
   final Color inactiveDisabledTrackBarColor;
   final double activeTrackBarHeight;
@@ -2224,6 +2229,7 @@ class FlutterSliderTrackBar {
   const FlutterSliderTrackBar({
     this.inactiveTrackBar,
     this.activeTrackBar,
+    this.activeTrackBarDraggable = true,
     this.activeDisabledTrackBarColor = const Color(0xffb5b5b5),
     this.inactiveDisabledTrackBarColor = const Color(0xffe5e5e5),
     this.activeTrackBarHeight = 3.5,

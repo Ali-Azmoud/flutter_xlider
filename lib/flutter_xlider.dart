@@ -1749,6 +1749,10 @@ class _FlutterSliderState extends State<FlutterSlider>
     }
     String numberFormat = value.toString();
 
+    if (_tooltipData.formatValue != null) {
+      numberFormat = _tooltipData.formatValue(value);
+    }
+
     Widget tooltipWidget = IgnorePointer(
         child: Center(
       child: Container(
@@ -2156,6 +2160,7 @@ class FlutterSliderHandler {
 
 class FlutterSliderTooltip {
   Widget Function(dynamic value) custom;
+  String Function(dynamic value) formatValue;
   TextStyle textStyle;
   FlutterSliderTooltipBox boxStyle;
   Widget leftPrefix;
@@ -2167,6 +2172,7 @@ class FlutterSliderTooltip {
 
   FlutterSliderTooltip(
       {this.custom,
+      this.formatValue,
       this.textStyle,
       this.boxStyle,
       this.leftPrefix,

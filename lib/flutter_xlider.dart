@@ -1580,6 +1580,17 @@ class _FlutterSliderState extends State<FlutterSlider>
   }
 
   drawHandlers() {
+    Widget draggable = Draggable(
+        axis: widget.axis,
+        feedback: Container(),
+        child: Container(
+          color: Colors.redAccent,
+        ));
+    if (!widget.rangeSlider ||
+        (widget.trackBar != null && !widget.trackBar.activeTrackBarDraggable)) {
+      draggable = Container();
+    }
+
     List<Positioned> items = []..addAll([
         Function.apply(_inactiveTrack, []),
         Function.apply(_centralWidget, []),
@@ -1648,10 +1659,10 @@ class _FlutterSliderState extends State<FlutterSlider>
 
                 if (widget.axis == Axis.horizontal) {
                   tappedPositionWithPadding =
-                      _handlersWidth + (_touchSize) - xDragTmp;
+                      _handlersWidth / 2 + (_touchSize) - xDragTmp;
                 } else {
                   tappedPositionWithPadding =
-                      _handlersHeight + (_touchSize) - yDragTmp;
+                      _handlersHeight / 2 + (_touchSize) - yDragTmp;
                 }
 
                 if (_distanceFromLeftHandler < _distanceFromRightHandler) {
@@ -1708,16 +1719,7 @@ class _FlutterSliderState extends State<FlutterSlider>
 
               setState(() {});
             },
-            child: Visibility(
-              visible: widget.trackBar.activeTrackBarDraggable,
-              child: Draggable(
-                axis: widget.axis,
-                feedback: Container(),
-                child: Container(
-                  color: Colors.redAccent,
-                ),
-              ),
-            ),
+            child: draggable,
           ),
         )));
 
@@ -1752,10 +1754,8 @@ class _FlutterSliderState extends State<FlutterSlider>
       suffix = _tooltipData.rightSuffix ?? Container();
     }
     String numberFormat = value.toString();
-
-    if (_tooltipData.formatValue != null) {
-      numberFormat = _tooltipData.formatValue(value);
-    }
+    if (_tooltipData.format != null)
+      numberFormat = _tooltipData.format(numberFormat);
 
     Widget tooltipWidget = IgnorePointer(
         child: Center(
@@ -2164,7 +2164,7 @@ class FlutterSliderHandler {
 
 class FlutterSliderTooltip {
   Widget Function(dynamic value) custom;
-  String Function(dynamic value) formatValue;
+  String Function(String value) format;
   TextStyle textStyle;
   FlutterSliderTooltipBox boxStyle;
   Widget leftPrefix;
@@ -2176,7 +2176,7 @@ class FlutterSliderTooltip {
 
   FlutterSliderTooltip(
       {this.custom,
-      this.formatValue,
+      this.format,
       this.textStyle,
       this.boxStyle,
       this.leftPrefix,
@@ -2225,22 +2225,22 @@ class FlutterSliderTooltipBox {
 class FlutterSliderTrackBar {
   final BoxDecoration inactiveTrackBar;
   final BoxDecoration activeTrackBar;
-  final bool activeTrackBarDraggable;
   final Color activeDisabledTrackBarColor;
   final Color inactiveDisabledTrackBarColor;
   final double activeTrackBarHeight;
   final double inactiveTrackBarHeight;
   final Widget centralWidget;
+  final bool activeTrackBarDraggable;
 
   const FlutterSliderTrackBar({
     this.inactiveTrackBar,
     this.activeTrackBar,
-    this.activeTrackBarDraggable = true,
     this.activeDisabledTrackBarColor = const Color(0xffb5b5b5),
     this.inactiveDisabledTrackBarColor = const Color(0xffe5e5e5),
     this.activeTrackBarHeight = 3.5,
     this.inactiveTrackBarHeight = 3,
     this.centralWidget,
+    this.activeTrackBarDraggable = true,
   })  : assert(activeTrackBarHeight != null &&
             activeTrackBarHeight > 0 &&
             inactiveTrackBarHeight != null &&

@@ -128,3 +128,10 @@
 ## [3.1.1] - 02/05/2020
 
 * tooltip related bug: `The getter 'boxStyle' was called on null` fixed
+
+## [3.2.0] - 03/12/2020
+
+* tooltip value formatting feature added
+* disabled trackbar draggable feature added
+* trackbar reported bug: ` the active track bar is draggable even when it's not a range slider` fixed
+* selectByTap positioning bug fixed

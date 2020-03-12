@@ -231,6 +231,22 @@ FlutterSlider(
 ![](images/range-tooltip-prefix-suffix.gif)
 
 
+### Tooltip Format
+
+If you want to change the format of the value of tooltip you can use `format` method.
+
+```dart
+FlutterSlider(
+  ...
+    tooltip: FlutterSliderTooltip(
+      format: (String value) {
+        return value + ' ! ';
+      }
+    ),
+  ...
+)
+```
+
 ### Tooltip Callback
 
 If you want to fully change tooltip widget and use your own customized widget, you can use `custom` function.
@@ -416,7 +432,7 @@ FlutterSlider(
 
 ### Locked Handlers
 
-If you want to lock your handlers by a certain value, you can use `lockedHandlers` and `lockedDistance` properties
+If you want to lock your handlers by a certain value, you can use `lockHandlers` and `lockDistance` properties
 
 ```dart
 FlutterSlider(
@@ -593,8 +609,8 @@ FlutterSlider(
     new DateTime(2019,6,1,0,0,0).millisecondsSinceEpoch.toDouble(), // lower date : 2019-06-01
     new DateTime(2019,9,1,0,0,0).millisecondsSinceEpoch.toDouble(), // upper date : 2019-09-01
   ],
-  max: new DateTime(2020,1,1,0,0,0).millisecondsSinceEpoch.toDouble(), // start date : 2019-01-01
-  min: new DateTime(2019,1,1,0,0,0).millisecondsSinceEpoch.toDouble(), // finish date : 2020-01-01
+  min: new DateTime(2019,1,1,0,0,0).millisecondsSinceEpoch.toDouble(), // start date : 2019-01-01
+  max: new DateTime(2020,1,1,0,0,0).millisecondsSinceEpoch.toDouble(), // finish date : 2020-01-01
   step: 86400, // 1 day
   ...
 

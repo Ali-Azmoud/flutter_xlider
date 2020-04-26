@@ -657,6 +657,7 @@ class _FlutterSliderState extends State<FlutterSlider>
     _tooltipData.rightPrefix = _tooltipData.rightPrefix ?? null;
     _tooltipData.rightSuffix = _tooltipData.rightSuffix ?? null;
     _tooltipData.alwaysShowTooltip = _tooltipData.alwaysShowTooltip ?? false;
+    _tooltipData.disableToolTipAnimation = _tooltipData.disableToolTipAnimation ?? false;
     _tooltipData.disabled = _tooltipData.disabled ?? false;
 
     _arrangeHandlersZIndex();
@@ -1797,7 +1798,7 @@ class _FlutterSliderState extends State<FlutterSlider>
 
     if (widget.axis == Axis.vertical) top = _touchSize - 35;
 
-    if (_tooltipData.alwaysShowTooltip == false) {
+    if (_tooltipData.alwaysShowTooltip == false && _tooltipData.disableToolTipAnimation == false) {
       top = 0;
       if (widget.axis == Axis.vertical) {
         top = _touchSize - 10;
@@ -2172,6 +2173,7 @@ class FlutterSliderTooltip {
   Widget rightPrefix;
   Widget rightSuffix;
   bool alwaysShowTooltip;
+  bool disableToolTipAnimation;
   bool disabled;
 
   FlutterSliderTooltip(
@@ -2184,6 +2186,7 @@ class FlutterSliderTooltip {
       this.rightPrefix,
       this.rightSuffix,
       this.alwaysShowTooltip,
+      this.disableToolTipAnimation,
       this.disabled});
 
   @override

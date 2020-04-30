@@ -265,7 +265,7 @@ FlutterSlider(
 
 
 
-### Disable tooltip
+### Disable Tooltip
 
 To disable tooltips, use `disabled` in `FlutterSliderTooltip` class
 ```dart
@@ -273,6 +273,34 @@ FlutterSlider(
   ...
     tooltip: FlutterSliderTooltip(
       disabled: true,
+    ),
+  ...
+)
+```
+
+### Tooltip Direction
+
+To change the direction of the tooltip, you can use `direction`
+```dart
+FlutterSlider(
+  ...
+    tooltip: FlutterSliderTooltip(
+      direction: FlutterSliderTooltipDirection.right,
+    ),
+  ...
+)
+```
+
+### Tooltip Position Offset
+
+By default tooltip alignment is center, but you can modify it's `top`, `left`, `right` and `bottom` by using `positionOffset`
+```dart
+FlutterSlider(
+  ...
+    tooltip: FlutterSliderTooltip(
+      positionOffset: FlutterSliderTooltipPositionOffset(
+        top: -100
+      ),
     ),
   ...
 )

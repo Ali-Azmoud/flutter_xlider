@@ -135,3 +135,13 @@
 * disabled trackbar draggable feature added
 * trackbar reported bug: ` the active track bar is draggable even when it's not a range slider` fixed
 * selectByTap positioning bug fixed
+
+## [3.3.0] - 04/30/2020
+
+* tooltip direction added
+* tooltip position offset added
+* tap and move feature added
+* handler disappear after changing device orientation bug fixed
+* animations exception fixed 
+* tooltip customization bug fixed
+* selectByTap positioning bug fixed

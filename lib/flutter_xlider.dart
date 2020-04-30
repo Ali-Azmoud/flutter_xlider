@@ -257,6 +257,16 @@ class _FlutterSliderState extends State<FlutterSlider>
     super.initState();
   }
 
+    @override
+  void dispose() {
+    _rightTooltipAnimationController.dispose();
+    _leftTooltipAnimationController.dispose();
+    _leftHandlerScaleAnimationController.dispose();
+    _rightHandlerScaleAnimationController.dispose();
+    super.dispose();
+  }
+  
+  
   @override
   void didUpdateWidget(FlutterSlider oldWidget) {
     if (_initSnapshot.toJson().toString() != widget.toJson().toString()) {

@@ -291,12 +291,12 @@ class _FlutterSliderState extends State<FlutterSlider>
               _constraintMaxHeight - _handlersHeight;
 
           _containerWidth = constraints.maxWidth;
-          _containerHeight = (_handlersHeight * 1.8);
+          _containerHeight = (_handlersHeight * 1);
 
           __containerSizeWithoutPadding = _containerWidthWithoutPadding;
           if (widget.axis == Axis.vertical) {
             __containerSizeWithoutPadding = _containerHeightWithoutPadding;
-            _containerWidth = (_handlersWidth * 1.8);
+            _containerWidth = (_handlersWidth * 1);
             _containerHeight = constraints.maxHeight;
           }
 

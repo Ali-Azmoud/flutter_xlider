@@ -487,7 +487,7 @@ class _FlutterSliderState extends State<FlutterSlider>
       List<Widget> labelWidget = [];
       if (widget.hatchMark.labels.length > 0) {
         for (FlutterSliderHatchMarkLabel markLabel in widget.hatchMark.labels) {
-          double tr = markLabel.percent;
+          double tr = markLabel.percent.truncateToDouble();
 
           if (widget.rtl) tr = 100 - tr;
           if (tr * hatchMark.density == p) {

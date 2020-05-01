@@ -140,8 +140,14 @@
 
 * tooltip direction added
 * tooltip position offset added
-* tap and move feature added
+* tap and slide feature added
 * handler disappear after changing device orientation bug fixed
 * animations exception fixed 
 * tooltip customization bug fixed
 * selectByTap positioning bug fixed
+
+## [3.3.1] - 05/01/2020
+
+* tap and slide bug fixed
+* tap and slide event call bug fixed
+* dragging event bug fixed

@@ -1950,12 +1950,12 @@ class _FlutterSliderState extends State<FlutterSlider>
 
     return Positioned(
       left: left,
-      top: top,
+      top: top-15,
       right: right,
       bottom: bottom,
       child: Center(
         child: Container(
-          height: height,
+          height: height+30,
           width: width,
           decoration: BoxDecoration(
               color: trackBarColor,

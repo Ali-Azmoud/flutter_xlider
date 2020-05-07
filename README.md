@@ -2,7 +2,9 @@
 
 (Flutter Slider) A material design slider and range slider, horizontal and vertical, with rtl support and lots of options and customizations for flutter
 
-**You can find more customized examples in wiki page**
+**You can find more customized examples in wiki page**  
+
+!! **Since version 3.4.0-dev.3, step type is no longer `double`, its `FlutterSliderStep`** !!
 
 ## Get Started
 
@@ -383,13 +385,15 @@ If you want to have a non-linear slider with different steps, simply use `rangeS
 
 ```dart
 FlutterSlider(
+  min: 0,
+  max: 1000000,
   ...
   step: FlutterSliderStep(
     step: 1, // default
     isPercentRange: true, // ranges are percents, 0% to 20% and so on... . default is true
     rangeList: [
-      FlutterSliderRangeStep(from: 0, to: 20, step: 0.5),
-      FlutterSliderRangeStep(from: 20, to: 100, step: 10),
+      FlutterSliderRangeStep(from: 0, to: 20, step: 10000),
+      FlutterSliderRangeStep(from: 20, to: 100, step: 200000),
     ]
   ),
   ...

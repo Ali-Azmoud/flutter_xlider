@@ -2,9 +2,7 @@
 
 (Flutter Slider) A material design slider and range slider, horizontal and vertical, with rtl support and lots of options and customizations for flutter
 
-**Version 3.0.0 and above, breaks functionality of older versions**  
-**Since version 3.0.0, Intl dependency is removed**
-
+**You can find more customized examples in wiki page**
 
 ## Get Started
 
@@ -373,10 +371,32 @@ The amount the slider changes on movement can be set using `step` option
 ```dart
 FlutterSlider(
   ...
-  step: 100,
+  step: FlutterSliderStep(step: 1),
   ...
 )
 ```
+
+
+### Range Step
+
+If you want to have a non-linear slider with different steps, simply use `rangeStep` feature.
+
+```dart
+FlutterSlider(
+  ...
+  step: FlutterSliderStep(
+    step: 1, // default
+    isPercentRange: true, // ranges are percents, 0% to 20% and so on... . default is true
+    rangeList: [
+      FlutterSliderRangeStep(from: 0, to: 20, step: 0.5),
+      FlutterSliderRangeStep(from: 20, to: 100, step: 10),
+    ]
+  ),
+  ...
+)
+```
+
+![](images/range-step.gif)
 
 ### Ignore Steps
 
@@ -479,12 +499,20 @@ FlutterSlider(
 You can display a `Hatch Mark` underneath or beside of your slider based on `axis`. In order to display hatch mark you must   
 use `FlutterSliderHatchMark` class which has following properties:
 
-1. `distanceFromTrackBar`: The distance between slider and hatch mark
-2. `density`: The amount of lines per percent. 1 is default. any number less or more than 1 will decrease and increase lines respectively
-3. `labels`: If you want to display some label or text at certain percent in your hatch mark, you can use `labels`
-4. `smallLine`: The widget of small lines in hatch mark
-5. `bigLine`: The widget of big lines in hatch mark
-6. `labelBox`: The widget of label box
+1. `linesDistanceFromTrackBar`: The distance of lines from slider. can be negative
+2. `bigLine`: The widget of big lines in hatch mark
+3. `smallLine`: The widget of small lines in hatch mark
+4. `linesAlignment`: the direct of lines, `right` or `left` which works as `top` or `bottom` on horizontal slider
+5. `density`: The amount of lines per percent. 1 is default. any number less or more than 1 will decrease and increase lines respectively
+6. `displayLines`: to display lines. by default is `false` for the sake of optimization
+
+7. `labels`: If you want to display some label or text at certain percent in your hatch mark, you can use `labels`
+8. `labelBox`: The widget of label box, however, you can define a widget for each label and have it's own style
+9. `labelsDistanceFromTrackBar`: The distance of labels from slider. can be negative
+
+10. `disabled`: to disabled the whole hatchmark ( hide )
+
+**labels alignment is center**
 
 Here is an example:
 
@@ -492,7 +520,6 @@ Here is an example:
 FlutterSlider(
   ...
     hatchMark: FlutterSliderHatchMark(
-       distanceFromTrackBar: 10,
        density: 0.5, // means 50 lines, from 0 to 100 percent
        labels: [
          FlutterSliderHatchMarkLabel(percent: 0, label: Text('Start')),
@@ -621,9 +648,6 @@ FlutterSlider(
   ...
 )
 ```
-**If you use `selectByTap`, then only `onDragStarted` and `onDragCompleted` will fire.**
-
-
 
 
 ## Working with Dates
@@ -639,7 +663,7 @@ FlutterSlider(
   ],
   min: new DateTime(2019,1,1,0,0,0).millisecondsSinceEpoch.toDouble(), // start date : 2019-01-01
   max: new DateTime(2020,1,1,0,0,0).millisecondsSinceEpoch.toDouble(), // finish date : 2020-01-01
-  step: 86400, // 1 day
+  step: FlutterSliderStep(step: 86400), // 1 day
   ...
 
   ...

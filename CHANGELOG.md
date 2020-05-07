@@ -151,3 +151,24 @@
 * tap and slide bug fixed
 * tap and slide event call bug fixed
 * dragging event bug fixed
+
+## [3.3.2-dev.1] - 05/04/2020
+
+* update widget bug fixed
+
+## [3.4.0-dev.1] - 05/04/2020
+
+* rangeStep feature added
+* tooltip format bug fixed
+
+## [3.4.0-dev.2] - 05/04/2020
+
+* tooltip custom bug fixed
+
+## [3.4.0-dev.3] - 05/07/2020
+
+* handler opacity feature added
+* hatchmark lines alignment feature added
+* hatchmark lines and labels are separated and rewritten
+* values setState bug fixed
+* step is changed from double to `FlutterSliderStep` class

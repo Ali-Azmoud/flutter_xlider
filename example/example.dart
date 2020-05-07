@@ -77,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
                 max: 25000,
                 min: 0,
-                step: 100,
+                step: FlutterSliderStep(step: 100),
 
                 jump: true,
 
@@ -130,7 +130,7 @@ class _MyHomePageState extends State<MyHomePage> {
 //                ],
                 max: 25000,
                 min: 0,
-                step: 100,
+                step: FlutterSliderStep(step: 100),
                 jump: true,
                 trackBar: FlutterSliderTrackBar(
                   inactiveTrackBarHeight: 2,
@@ -173,7 +173,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               max: 2000000000,
               min: 0,
-              step: 20,
+              step: FlutterSliderStep(step: 20),
               jump: true,
               onDragging: (handlerIndex, lowerValue, upperValue) {
                 _lowerValue = lowerValue;
@@ -239,7 +239,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: FlutterSlider(
               handlerWidth: 15,
               hatchMark: FlutterSliderHatchMark(
-                distanceFromTrackBar: 5,
+                linesDistanceFromTrackBar: 5,
                 density: 0.5,
                 labels: [
                   FlutterSliderHatchMarkLabel(percent: 0, label: Text('Start')),
@@ -278,7 +278,7 @@ class _MyHomePageState extends State<MyHomePage> {
               max: 100000,
               touchSize: 15,
               rangeSlider: true,
-              step: 1000,
+              step: FlutterSliderStep(step: 1000),
               onDragging: (handlerIndex, lowerValue, upperValue) {},
             ),
           ),

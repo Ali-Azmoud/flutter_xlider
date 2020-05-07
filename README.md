@@ -2,8 +2,6 @@
 
 (Flutter Slider) A material design slider and range slider, horizontal and vertical, with rtl support and lots of options and customizations for flutter
 
-**You can find more customized examples in wiki page**  
-
 !! **Since version 3.4.0-dev.3, step type is no longer `double`, its `FlutterSliderStep`** !!
 
 ## Get Started
@@ -690,3 +688,12 @@ FlutterSlider(
 
 It's exciting to see what you've build using this package.  
 Open `wiki` tab, create a page and share your code and image of your slider with us. Thank you   
+
+Here are some examples of what you can make using this package:  
+
+![Alphabet Range](https://github.com/Ali-Azmoud/flutter_xlider/blob/master/wiki-images/alphabet.gif)  
+![Waves](https://github.com/Ali-Azmoud/flutter_xlider/blob/master/wiki-images/waves.gif)  
+![Dirty Dial](https://github.com/Ali-Azmoud/flutter_xlider/blob/master/wiki-images/dirtydial.gif)  
+![Alone in the Dark](https://github.com/Ali-Azmoud/flutter_xlider/blob/master/wiki-images/aloneinthedark.gif)  
+
+You can find the source code in the `wiki` tab.

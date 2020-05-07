@@ -48,6 +48,8 @@ class FlutterSlider extends StatefulWidget {
   final bool centeredOrigin;
   final bool lockHandlers;
   final double lockDistance;
+  final BoxDecoration decoration;
+  final BoxDecoration foregroundDecoration;
 
   FlutterSlider(
       {this.key,
@@ -80,7 +82,9 @@ class FlutterSlider extends StatefulWidget {
       this.hatchMark,
       this.centeredOrigin = false,
       this.lockHandlers = false,
-      this.lockDistance})
+      this.lockDistance,
+      this.decoration,
+      this.foregroundDecoration})
       : assert(touchSize == null ||
             (touchSize != null && (touchSize >= 5 && touchSize <= 50))),
         assert(values != null),
@@ -318,6 +322,8 @@ class _FlutterSliderState extends State<FlutterSlider>
                   overflow: Overflow.visible,
                   children: drawHandlers(),
                 ),
+                foregroundDecoration: widget.foregroundDecoration,
+                decoration: widget.decoration,
               ),
             ],
           );
@@ -2249,10 +2255,6 @@ class _FlutterSliderState extends State<FlutterSlider>
     }
 
     return double.parse((value + _widgetMin).toStringAsFixed(_decimalScale));
-    // return (value + _widgetMin);
-//    if(_decimalScale > 0) {
-//    }
-//    return double.parse((value + _widgetMin).floor().toStringAsFixed(_decimalScale));
   }
 
   void _arrangeHandlersZIndex() {

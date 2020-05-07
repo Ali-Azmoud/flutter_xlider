@@ -172,3 +172,7 @@
 * hatchmark lines and labels are separated and rewritten
 * values setState bug fixed
 * step is changed from double to `FlutterSliderStep` class
+
+## [3.4.0] - 05/08/2020
+
+* `decoration` and `foregroundDecoration` added to slider 

@@ -419,6 +419,9 @@ class _FlutterSliderState extends State<FlutterSlider>
       case FlutterSliderTooltipDirection.right:
         animationFinish = Offset(1, 0);
         break;
+      case FlutterSliderTooltipDirection.bottom:
+        animationFinish = Offset(0, 1);
+        break;
     }
 
     if (__isInitCall) {
@@ -2044,6 +2047,11 @@ class _FlutterSliderState extends State<FlutterSlider>
         top = 0;
         bottom = 0;
         break;
+      case FlutterSliderTooltipDirection.bottom:
+        bottom = 0;
+        left = 0;
+        right = 0;
+        break;
     }
 
     if (_tooltipData.positionOffset != null) {
@@ -2741,5 +2749,5 @@ class FlutterSliderRangeStep {
   }
 }
 
-enum FlutterSliderTooltipDirection { top, left, right }
+enum FlutterSliderTooltipDirection { top, left, right, bottom }
 enum FlutterSliderHatchMarkAlignment { left, right }

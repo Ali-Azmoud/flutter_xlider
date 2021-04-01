@@ -18,9 +18,9 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key? key, this.title}) : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -34,7 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.title!),
       ),
       body: Column(
         children: <Widget>[
@@ -53,13 +53,10 @@ class _MyHomePageState extends State<MyHomePage> {
               rangeSlider: true,
               rtl: true,
               handlerAnimation: FlutterSliderHandlerAnimation(
-                  curve: Curves.elasticOut,
-                  reverseCurve: null,
-                  duration: Duration(milliseconds: 700),
-                  scale: 1.4),
+                  curve: Curves.elasticOut, reverseCurve: null, duration: Duration(milliseconds: 700), scale: 1.4),
               onDragging: (handlerIndex, lowerValue, upperValue) {
-                _lowerValue = lowerValue;
-                _upperValue = upperValue;
+                _lowerValue = lowerValue as double;
+                _upperValue = upperValue as double;
                 setState(() {});
               },
             ),
@@ -111,8 +108,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 disabled: false,
 
                 onDragging: (handlerIndex, lowerValue, upperValue) {
-                  _lowerValue = lowerValue;
-                  _upperValue = upperValue;
+                  _lowerValue = lowerValue as double;
+                  _upperValue = upperValue as double;
                   setState(() {});
                 },
               )),
@@ -139,8 +136,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
                 disabled: false,
 
-                handler: customHandler(Icons.chevron_right),
-                rightHandler: customHandler(Icons.chevron_left),
+                handler: customHandler(Icons.chevron_right) as FlutterSliderHandler?,
+                rightHandler: customHandler(Icons.chevron_left) as FlutterSliderHandler?,
                 tooltip: FlutterSliderTooltip(
                   leftPrefix: Icon(
                     Icons.attach_money,
@@ -156,8 +153,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
 
                 onDragging: (handlerIndex, lowerValue, upperValue) {
-                  _lowerValue = lowerValue;
-                  _upperValue = upperValue;
+                  _lowerValue = lowerValue as double;
+                  _upperValue = upperValue as double;
                   setState(() {});
                 },
               )),
@@ -176,8 +173,8 @@ class _MyHomePageState extends State<MyHomePage> {
               step: FlutterSliderStep(step: 20),
               jump: true,
               onDragging: (handlerIndex, lowerValue, upperValue) {
-                _lowerValue = lowerValue;
-                _upperValue = upperValue;
+                _lowerValue = lowerValue as double;
+                _upperValue = upperValue as double;
                 setState(() {});
               },
             ),
@@ -199,13 +196,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   color: Colors.black12,
                   border: Border.all(width: 3, color: Colors.blue),
                 ),
-                activeTrackBar: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4),
-                    color: Colors.blue.withOpacity(0.5)),
+                activeTrackBar:
+                    BoxDecoration(borderRadius: BorderRadius.circular(4), color: Colors.blue.withOpacity(0.5)),
               ),
               onDragging: (handlerIndex, lowerValue, upperValue) {
-                _lowerValue = lowerValue;
-                _upperValue = upperValue;
+                _lowerValue = lowerValue as double;
+                _upperValue = upperValue as double;
                 setState(() {});
               },
             ),
@@ -226,7 +222,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 FlutterSliderFixedValue(percent: 100, value: "100B"),
               ],
               onDragging: (handlerIndex, lowerValue, upperValue) {
-                _lowerValue = lowerValue;
+                _lowerValue = lowerValue as double;
                 setState(() {});
               },
             ),
@@ -243,13 +239,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 density: 0.5,
                 labels: [
                   FlutterSliderHatchMarkLabel(percent: 0, label: Text('Start')),
-                  FlutterSliderHatchMarkLabel(
-                      percent: 10, label: Text('10,000')),
+                  FlutterSliderHatchMarkLabel(percent: 10, label: Text('10,000')),
                   FlutterSliderHatchMarkLabel(percent: 50, label: Text('50 %')),
-                  FlutterSliderHatchMarkLabel(
-                      percent: 80, label: Text('80,000')),
-                  FlutterSliderHatchMarkLabel(
-                      percent: 100, label: Text('Finish')),
+                  FlutterSliderHatchMarkLabel(percent: 80, label: Text('80,000')),
+                  FlutterSliderHatchMarkLabel(percent: 100, label: Text('Finish')),
                 ],
               ),
               jump: true,
@@ -299,8 +292,7 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Container(
         child: Container(
           margin: EdgeInsets.all(5),
-          decoration: BoxDecoration(
-              color: Colors.blue.withOpacity(0.3), shape: BoxShape.circle),
+          decoration: BoxDecoration(color: Colors.blue.withOpacity(0.3), shape: BoxShape.circle),
           child: Icon(
             icon,
             color: Colors.white,
@@ -311,11 +303,7 @@ class _MyHomePageState extends State<MyHomePage> {
           color: Colors.white,
           shape: BoxShape.circle,
           boxShadow: [
-            BoxShadow(
-                color: Colors.blue.withOpacity(0.3),
-                spreadRadius: 0.05,
-                blurRadius: 5,
-                offset: Offset(0, 1))
+            BoxShadow(color: Colors.blue.withOpacity(0.3), spreadRadius: 0.05, blurRadius: 5, offset: Offset(0, 1))
           ],
         ),
       ),

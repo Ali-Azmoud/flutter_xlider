@@ -273,7 +273,7 @@ class _FlutterSliderState extends State<FlutterSlider>
             }
             __containerSizeWithoutPadding = _containerHeightWithoutPadding;
             _containerWidth =
-                [(sliderProperSize! * 2), layoutWidth].reduce(max);
+                [(sliderProperSize! * 2), layoutWidth].reduce(min);
             _containerHeight = constraints.maxHeight;
           } else {
             double layoutHeight = constraints.maxHeight;
@@ -282,7 +282,7 @@ class _FlutterSliderState extends State<FlutterSlider>
             }
             _containerWidth = constraints.maxWidth;
             _containerHeight =
-                [(sliderProperSize! * 2), layoutHeight].reduce(max);
+                [(sliderProperSize! * 2), layoutHeight].reduce(min);
             __containerSizeWithoutPadding = _containerWidthWithoutPadding;
           }
 

@@ -176,3 +176,7 @@
 ## [3.4.0] - 05/08/2020
 
 * `decoration` and `foregroundDecoration` added to slider 
+
+## [3.5.0] - 03/05/2021
+
+* migrated the project to support sound null safety.

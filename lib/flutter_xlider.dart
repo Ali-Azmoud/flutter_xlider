@@ -434,18 +434,18 @@ class _FlutterSliderState extends State<FlutterSlider> with TickerProviderStateM
         [widget.trackBar!.inactiveTrackBarHeight, widget.trackBar!.activeTrackBarHeight].reduce(max);
 
     final FlutterSliderHatchMark hatchMark = FlutterSliderHatchMark();
-    hatchMark.disabled = widget.hatchMark!.disabled ?? false;
-    hatchMark.density = widget.hatchMark!.density ?? 1;
-    hatchMark.linesDistanceFromTrackBar = widget.hatchMark!.linesDistanceFromTrackBar ?? 0;
-    hatchMark.labelsDistanceFromTrackBar = widget.hatchMark!.labelsDistanceFromTrackBar ?? 0;
-    hatchMark.smallLine = widget.hatchMark!.smallLine ??
+    hatchMark.disabled = widget.hatchMark?.disabled ?? false;
+    hatchMark.density = widget.hatchMark?.density ?? 1;
+    hatchMark.linesDistanceFromTrackBar = widget.hatchMark?.linesDistanceFromTrackBar ?? 0;
+    hatchMark.labelsDistanceFromTrackBar = widget.hatchMark?.labelsDistanceFromTrackBar ?? 0;
+    hatchMark.smallLine = widget.hatchMark?.smallLine ??
         const FlutterSliderSizedBox(height: 5, width: 1, decoration: BoxDecoration(color: Colors.black45));
-    hatchMark.bigLine = widget.hatchMark!.bigLine ??
+    hatchMark.bigLine = widget.hatchMark?.bigLine ??
         const FlutterSliderSizedBox(height: 9, width: 2, decoration: BoxDecoration(color: Colors.black45));
-    hatchMark.labelBox = widget.hatchMark!.labelBox ?? const FlutterSliderSizedBox(height: 50, width: 50);
-    hatchMark.labels = widget.hatchMark!.labels ?? null;
-    hatchMark.linesAlignment = widget.hatchMark!.linesAlignment ?? FlutterSliderHatchMarkAlignment.right;
-    hatchMark.displayLines = widget.hatchMark!.displayLines ?? false;
+    hatchMark.labelBox = widget.hatchMark?.labelBox ?? const FlutterSliderSizedBox(height: 50, width: 50);
+    hatchMark.labels = widget.hatchMark?.labels;
+    hatchMark.linesAlignment = widget.hatchMark?.linesAlignment ?? FlutterSliderHatchMarkAlignment.right;
+    hatchMark.displayLines = widget.hatchMark?.displayLines ?? false;
 
     if (hatchMark.displayLines!) {
       double percent = 100 * hatchMark.density;

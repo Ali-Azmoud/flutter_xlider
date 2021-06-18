@@ -260,6 +260,8 @@ class _FlutterSliderState extends State<FlutterSlider>
             builder: (BuildContext context, BoxConstraints constraints) {
           _constraintMaxWidth = constraints.maxWidth;
           _constraintMaxHeight = constraints.maxHeight;
+          _arrangeHandlersPosition();
+
 
           _containerWidthWithoutPadding = _constraintMaxWidth - _handlersWidth!;
           _containerHeightWithoutPadding =
@@ -441,8 +443,6 @@ class _FlutterSliderState extends State<FlutterSlider>
 
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       _renderBoxInitialization();
-
-      _arrangeHandlersPosition();
 
       _drawHatchMark();
 

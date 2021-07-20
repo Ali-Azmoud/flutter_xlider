@@ -1831,6 +1831,8 @@ class _FlutterSliderState extends State<FlutterSlider>
               __dragging = false;
               _trackBarSlideOnDragStartedCalled = false;
 
+              _renderBoxInitialization();
+
               double leftHandlerLastPosition, rightHandlerLastPosition;
               if (widget.axis == Axis.horizontal) {
                 double lX = _leftHandlerXPosition! +

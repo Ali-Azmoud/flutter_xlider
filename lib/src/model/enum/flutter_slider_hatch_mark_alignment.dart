@@ -1,0 +1,4 @@
+enum FlutterSliderHatchMarkAlignment {
+  left,
+  right,
+}

@@ -1811,6 +1811,9 @@ class _FlutterSliderState extends State<FlutterSlider>
                   }
                   _rightHandlerMove(_,
                       tappedPositionWithPadding: tappedPositionWithPadding);
+                  if (_.delta == Offset.zero) {
+                    _callbacks('onDragCompleted', 1);
+                  }
                 }
               }
             },
